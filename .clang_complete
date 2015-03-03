@@ -1,0 +1,12 @@
+-DNDEBUG
+-std=c++11
+-x c++
+-isystem /System/Library/Frameworks/Python.framework/Headers
+-isystem ../llvm/include
+-isystem ../llvm/tools/clang/include
+-I/Users/loic/local_install/bin/../lib/clang/3.4/include
+-I.
+-I/usr/local/include
+-I/Users/loic/local_install/include
+-I/Users/loic/Documents/Cours/ENSI/Synthese/Synthese3A/SI3ALabs
+-DGL_GLEXT_PROTOTYPES

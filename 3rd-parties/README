@@ -1,0 +1,3 @@
+## the boost dependencies can be obtained using bcp (see the documentation for
+## more details)
+bcp --boost=/usr/local/include/ any .

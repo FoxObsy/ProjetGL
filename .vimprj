@@ -1,0 +1,14 @@
+if !exists("g:cmakedone")
+  let g:cmakedone=1
+  CMake
+endif
+" Ctrlp
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|build'
+" default executable to be run
+" ctags for system filess
+"setlocal tags+=~/mydots/tags/gl_tags;~/mydots/tags/stl_tags
+setlocal tags=
+
+
+"set rtp=~/.vim,~/.vim/bundle/vim-clang_complete/
+set tags=

@@ -1,0 +1,21 @@
+#ignore backup files
+.DS_Store
+*~
+*#
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.snm
+*.toc
+*.nav
+*.vrb
+build
+Xcode
+*.swp
+*.swo
+
+resources/*.png
+.ycm_extra_conf.pyc
+
