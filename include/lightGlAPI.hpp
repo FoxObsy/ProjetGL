@@ -92,12 +92,13 @@ namespace ensi
         /** @class Program {{{
          *  @brief  generic GLSL shader program class
          * 
-         * Allows to load GLSL program, compile it and link it. It also tackles,
+         * Allows to load a GLSL program, compile it and link it. It also tackles,
          * setting uniforms based on the type of the input (int, float, glm
-         * vectors, matrices, ...).
+         * vectors, matrices, ...). 
+         * Beware automatic cast: setUniform(0) -> 0 is an int or unsigned int?
          *
          *  @note: 
-         * Attribute location are fixed (thanks to glBindAttribLocation)
+         * Attribute locations are fixed (thanks to glBindAttribLocation)
          * Don't forget to relink the program after fixing the locations.
          */
         class Program
@@ -111,10 +112,11 @@ namespace ensi
                 {
                     const std::string& name=entry.first;
                     GLint& index=entry.second;
+                    //!note: glBindAttribLocation forces to associate the location index with the
+                    //!      vertex GLSL attribute called 'name'
                     glBindAttribLocation(progid, index, name.c_str());
                 }
-                // Do not forget to link the program after binding the
-                // attributes:
+                // Do not forget to link the program after binding the attributes:
                 // http://www.opengl.org/sdk/docs/man/xhtml/glBindAttribLocation.xml
                 link_program(progid);
                 retrieveUniformNames();
@@ -130,28 +132,6 @@ namespace ensi
                     queried_uniforms=other.queried_uniforms;
                 }
                 return *this;
-            }/*}}}*/
-
-            void addUniformName(const std::string& name)/*{{{*/
-            {
-                    GLint location=glGetUniformLocation(progid, name.c_str());
-                    if(location>=0)
-                        uniforms[name]=location;
-                    else
-                        std::cout<<"====="<<name<<" could not be added to program "<<myname<<std::endl;
-            }/*}}}*/
-
-            bool hasUniform(const std::string& name) const/*{{{*/
-            {
-                return uniforms.find(name)!=uniforms.end();
-            }/*}}}*/
-
-            bool notYetQueried(const std::string& name) const/*{{{*/
-            {
-                bool wasQueried= queried_uniforms.find(name)!=queried_uniforms.end();
-                if(not wasQueried)
-                    queried_uniforms.insert(name);
-                return not wasQueried;
             }/*}}}*/
 
             // glUniform Wrappers/*{{{*/
@@ -330,6 +310,7 @@ namespace ensi
 
             virtual ~Program(){}
 
+        /*Private methods{{{*/
         private:
             void retrieveUniformNames()/*{{{*/
             {
@@ -346,15 +327,39 @@ namespace ensi
                 }
             }/*}}}*/
 
+            void addUniformName(const std::string& name)/*{{{*/
+            {
+                    GLint location=glGetUniformLocation(progid, name.c_str());
+                    if(location>=0)
+                        uniforms[name]=location;
+                    else
+                        std::cout<<"====="<<name<<" could not be added to program "<<myname<<std::endl;
+            }/*}}}*/
+
+            bool hasUniform(const std::string& name) const/*{{{*/
+            {
+                return uniforms.find(name)!=uniforms.end();
+            }/*}}}*/
+
+            bool notYetQueried(const std::string& name) const/*{{{*/
+            {
+                bool wasQueried= queried_uniforms.find(name)!=queried_uniforms.end();
+                if(not wasQueried)
+                    queried_uniforms.insert(name);
+                return not wasQueried;
+            }/*}}}*/
+        /*}}}*/
 
         // Public members/*{{{*/
         public:
-            GLuint progid;      
+            // program OpenGL location
+            GLuint progid;  
+            // a name for debug purpose
             std::string myname;      
+            // Vertex attribute locations (static and imposed thanks to  glBindAttribLocation
+            static std::map<std::string, GLint> attributes;
             // Uniforms locations
             std::map<std::string, GLint> uniforms;
-            // Attribute locations
-            static std::map<std::string, GLint> attributes;
             // Non-existing but queried uniforms
             mutable std::set<std::string> queried_uniforms;/*}}}*/
         };
@@ -365,10 +370,11 @@ namespace ensi
          *  @brief  generic GLSL material class
          * 
          * Allows to store values for various types of uniforms, including{{{
-         * texture samplers.
+         * texture samplers. Also encapsulates a Program.
          *
          *  @note:
          * Heterogeneous uniform types are handled by using boost::any.
+         * Beware automatic cast (0 -> int or unsigned int?)
          * }}}
          */
         class GLSLMaterial{
@@ -446,418 +452,6 @@ namespace ensi
             float tMin;
         };
         /*}}}*/
-
-        /** @class SceneObject {{{
-         *  @brief A abstract class for objects in the scene
-         *
-         */
-        class SceneObject
-        {
-        public:
-            virtual ~SceneObject (){}
-        
-            virtual SceneObject* clone() const=0;
-
-            virtual const Mesh& asMesh() const=0;
-
-            virtual void computeBSphere()=0;
-
-            virtual bool intersect(const Ray& ray, float& distHit) const=0;
-
-            bool intersectBoundingSphere(const Ray& ray, float& distHit) const/*{{{*/
-            {
-                /*!todo: Picking Lab Exercise 3: Implement bounding sphere reject//*{{{*/
-                /*! Reject occurs under any of the following conditions
-                 *  1 - The distance from the sphere center to its projection
-                 *      P(tProj) on the ray is larger than the sphere radius
-                 *  2 - P(tMin) is outside the sphere and further than P(tProj)
-                 * */
-                /*}}}*/
-                return true;
-            }
-            /*}}}*/
-
-        protected:
-            Sphere bSphere;
-        };/*}}}*/
-
-        /** @class Mesh {{{
-         *  @brief A mesh class
-         *  It is designed to encapsulate a c++ representation, made of vertices
-         *  and triangles. It also allows to setup a GPU equivalent thanks to
-         *  the methods setupVAO and setupIBO
-         *
-         */
-        class Mesh: public SceneObject
-        {
-        public:
-            Mesh() {}
-            
-            Mesh(const Mesh& other):SceneObject(other), m_verts(other.m_verts), m_tris(other.m_tris)/*{{{*/
-            {
-                
-            }/*}}}*/
-
-            virtual ~Mesh(){}
-
-            SceneObject* clone() const{/*{{{*/
-                return new Mesh(*this);
-            }/*}}}*/
-
-
-            void setupVAO(GLuint vao, const std::vector<GLuint>& vbos, GLenum usage=GL_STATIC_DRAW) const/*{{{*/
-            {
-                /* Make the cpu buffers*//*{{{*/
-                std::vector<glm::vec3> positions;
-                std::vector<glm::vec3> normals;
-                std::vector<glm::vec3> tangents;
-                std::vector<glm::vec4> colors;
-                std::vector<glm::vec2> uvs;
-                for(const Vertex& vertex : m_verts)
-                {
-                    positions.push_back(vertex.position);
-                    normals.push_back(vertex.normal);
-                    tangents.push_back(vertex.tangent);
-                    colors.push_back(vertex.color);
-                    uvs.push_back(vertex.uv);
-                }
-                /*}}}*/
-
-                /* Create all necessary VBOs  and attach them to the VAO*//*{{{*/
-                // Bind the vao
-                glBindVertexArray(vao);      
-
-                GLuint pbuffer = vbos[0];
-                GLuint nbuffer = vbos[1]; 
-                GLuint tbuffer = vbos[2]; 
-                GLuint cbuffer = vbos[3]; 
-                GLuint uvbuffer= vbos[4]; 
-
-
-
-                unsigned int nbverts=m_verts.size();
-                glBindBuffer(GL_ARRAY_BUFFER, pbuffer);
-                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec3), &positions[0], usage);
-                glVertexAttribPointer(
-                                      Program::attributes["vertexPosition"],  /* attribute */
-                                      3,                                /* size of the attribute */
-                                      GL_FLOAT,                         /* type */
-                                      GL_FALSE,                         /* normalized? */
-                                      0,                /* stride */
-                                      (void*)0                          /* array buffer offset */
-                                     );
-                glEnableVertexAttribArray(Program::attributes["vertexPosition"]);
-
-                glBindBuffer(GL_ARRAY_BUFFER, nbuffer);
-                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec3), &normals[0], usage);
-                glVertexAttribPointer(
-                                      Program::attributes["vertexNormal"],  /* attribute */
-                                      3,                                /* size of the attribute */
-                                      GL_FLOAT,                         /* type */
-                                      GL_FALSE,                         /* normalized? */
-                                      0,                /* stride */
-                                      (void*)0                          /* array buffer offset */
-                                     );
-                glEnableVertexAttribArray(Program::attributes["vertexNormal"]);
-
-                glBindBuffer(GL_ARRAY_BUFFER, tbuffer);
-                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec3), &tangents[0], usage);
-                glVertexAttribPointer(
-                                      Program::attributes["vertexTangent"],  /* attribute */
-                                      3,                                /* size of the attribute */
-                                      GL_FLOAT,                         /* type */
-                                      GL_FALSE,                         /* normalized? */
-                                      0,                /* stride */
-                                      (void*)0                          /* array buffer offset */
-                                     );
-                glEnableVertexAttribArray(Program::attributes["vertexTangent"]);
-
-                glBindBuffer(GL_ARRAY_BUFFER, cbuffer);
-                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec4), &colors[0], usage);
-                glVertexAttribPointer(
-                                      Program::attributes["vertexColor"],  /* attribute */
-                                      4,                                /* size of the attribute */
-                                      GL_FLOAT,                         /* type */
-                                      GL_FALSE,                         /* normalized? */
-                                      0,                /* stride */
-                                      (void*)0                          /* array buffer offset */
-                                     );
-                glEnableVertexAttribArray(Program::attributes["vertexColor"]);
-
-                glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec2), &uvs[0], usage);
-                glVertexAttribPointer(
-                                      Program::attributes["vertexUV"],  /* attribute */
-                                      2,                                /* size of the attribute */
-                                      GL_FLOAT,                         /* type */
-                                      GL_FALSE,                         /* normalized? */
-                                      0,                /* stride */
-                                      (void*)0                          /* array buffer offset */
-                                     );
-                glEnableVertexAttribArray(Program::attributes["vertexUV"]);
-                /*}}}*/
-            }/*}}}*/
-
-            void setupIBO(GLuint ibo, unsigned int& nbtris, GLenum usage=GL_STATIC_DRAW) const/*{{{*/
-            {
-                nbtris=m_tris.size();
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, nbtris*sizeof(unsigned int), &m_tris[0], usage);
-            }/*}}}*/
-
-            void recomputeTangents()/*{{{*/
-            {
-                std::vector<glm::vec3> ps;
-                std::vector<glm::vec2> uvs;
-                std::vector<glm::vec3> ns;
-                std::vector<glm::vec3> ts;
-                std::vector<glm::vec3> bs;
-                for( unsigned int k : m_tris)
-                {
-                    const Vertex& v=m_verts[k];
-                    ps.push_back(v.position);
-                    uvs.push_back(v.uv);
-                    ns.push_back(v.normal);
-                }
-                computeTangentBasis(ps, uvs, ns, ts, bs);
-                for( unsigned int k : m_tris)
-                {
-                    Vertex& v=m_verts[k];
-                    v.tangent=ts[k];
-                }
-            }/*}}}*/
-
-            void loadObj(const std::string& filepath, const glm::vec4& color=glm::vec4(1,1,1,1)){/*{{{*/
-                m_verts.clear();
-                m_tris.clear();
-                std::vector<glm::vec3> ps;
-                std::vector<glm::vec2> uvs;
-                std::vector<glm::vec3> ns;
-                bool res = loadOBJ(filepath.c_str(), ps, uvs, ns);
-                if(not res)
-                {
-                    std::cout<<"Error loading file: "<<filepath<<std::endl;
-                    return;
-                }
-                std::vector<glm::vec3> ts;
-                std::vector<glm::vec3> bs;
-                computeTangentBasis(ps, uvs, ns, ts, bs);
-                std::vector<glm::vec3> ops, ons, ots, obs;
-                std::vector<glm::vec2> ouvs;
-                indexVBO_TBN(ps, uvs, ns, ts, bs, m_tris, ops, ouvs, ons, ots, obs);
-                for(unsigned int i = 0; i < ops.size(); ++i)
-                {
-                    Vertex v(ops[i], ons[i], ouvs[i], color, ots[i]);
-                    m_verts.push_back(v);
-                }
-                computeBSphere();
-            }/*}}}*/
-
-            void makeMeCube(const glm::vec4& color=glm::vec4(1,1,1,1))/*{{{*/
-            {
-                m_verts.clear();
-                m_tris.clear();
-                std::vector<glm::vec3> ps, ns, ts, bs;
-                std::vector<glm::vec2> uvs;
-                //make the front face (y=0)/*{{{*/
-                glm::vec3 p0(0,0,0);
-                glm::vec3 p1(1,0,0);
-                glm::vec3 p2(1,0,1);
-                glm::vec3 p3(0,0,1);
-                glm::vec3 n0(0,-1,0);
-                glm::vec3 n1(0,-1,0);
-                glm::vec3 n2(0,-1,0);
-                glm::vec3 n3(0,-1,0);  
-                glm::vec3 pp0(0,1,0);
-                glm::vec3 pp1(0,1,1);
-                glm::vec3 pp2(1,1,1);
-                glm::vec3 pp3(1,1,0);
-                glm::vec3 nn0(0,1,0);
-                glm::vec3 nn1(0,1,0);
-                glm::vec3 nn2(0,1,0);
-                glm::vec3 nn3(0,1,0);  /*}}}*/
-                // for each axis create two faces
-                int nbverts=0;
-                for(int i = 0; i < 3; ++i)/*{{{*/
-                {
-                    int ix=i, iy=(i+1)%3, iz=(i+2)%3;
-                    // first face
-                    ps.push_back(glm::vec3(p0[ix]-0.5,p0[iy]-0.5,p0[iz]-0.5));
-                    ns.push_back(glm::vec3(n0[ix],n0[iy],n0[iz]));
-                    uvs.push_back(glm::vec2(p0[0],p0[2]));
-
-                    ps.push_back(glm::vec3(p1[ix]-0.5,p1[iy]-0.5,p1[iz]-0.5));
-                    ns.push_back(glm::vec3(n1[ix],n1[iy],n1[iz]));
-                    uvs.push_back(glm::vec2(p1[0],p1[2]));
-
-                    ps.push_back(glm::vec3(p2[ix]-0.5,p2[iy]-0.5,p2[iz]-0.5));
-                    ns.push_back(glm::vec3(n2[ix],n2[iy],n2[iz]));
-                    uvs.push_back(glm::vec2(p2[0],p2[2]));
-                    
-                    nbverts+=3;
-
-                    ps.push_back(glm::vec3(p0[ix]-0.5,p0[iy]-0.5,p0[iz]-0.5));
-                    ns.push_back(glm::vec3(n0[ix],n0[iy],n0[iz]));
-                    uvs.push_back(glm::vec2(p0[0],p0[2]));
-
-                    ps.push_back(glm::vec3(p2[ix]-0.5,p2[iy]-0.5,p2[iz]-0.5));
-                    ns.push_back(glm::vec3(n2[ix],n2[iy],n2[iz]));
-                    uvs.push_back(glm::vec2(p2[0],p2[2]));
-                    
-                    ps.push_back(glm::vec3(p3[ix]-0.5,p3[iy]-0.5,p3[iz]-0.5));
-                    ns.push_back(glm::vec3(n3[ix],n3[iy],n3[iz]));
-                    uvs.push_back(glm::vec2(p3[0],p3[2]));
-
-                    nbverts+=3;
-
-                    // second face
-                    ps.push_back(glm::vec3(pp0[ix]-0.5,pp0[iy]-0.5,pp0[iz]-0.5));
-                    ns.push_back(glm::vec3(nn0[ix],nn0[iy],nn0[iz]));
-                    uvs.push_back(glm::vec2(pp0[0],pp0[2]));
-
-                    ps.push_back(glm::vec3(pp1[ix]-0.5,pp1[iy]-0.5,pp1[iz]-0.5));
-                    ns.push_back(glm::vec3(nn1[ix],nn1[iy],nn1[iz]));
-                    uvs.push_back(glm::vec2(pp1[0],pp1[2]));
-
-                    ps.push_back(glm::vec3(pp2[ix]-0.5,pp2[iy]-0.5,pp2[iz]-0.5));
-                    ns.push_back(glm::vec3(nn2[ix],nn2[iy],nn2[iz]));
-                    uvs.push_back(glm::vec2(pp2[0],pp2[2]));
-                    
-                    nbverts+=3;
-
-                    ps.push_back(glm::vec3(pp0[ix]-0.5,pp0[iy]-0.5,pp0[iz]-0.5));
-                    ns.push_back(glm::vec3(nn0[ix],nn0[iy],nn0[iz]));
-                    uvs.push_back(glm::vec2(pp0[0],pp0[2]));
-
-                    ps.push_back(glm::vec3(pp2[ix]-0.5,pp2[iy]-0.5,pp2[iz]-0.5));
-                    ns.push_back(glm::vec3(nn2[ix],nn2[iy],nn2[iz]));
-                    uvs.push_back(glm::vec2(pp2[0],pp2[2]));
-                    
-                    ps.push_back(glm::vec3(pp3[ix]-0.5,pp3[iy]-0.5,pp3[iz]-0.5));
-                    ns.push_back(glm::vec3(nn3[ix],nn3[iy],nn3[iz]));
-                    uvs.push_back(glm::vec2(pp3[0],pp3[2]));
-
-                    nbverts+=3;
-                }/*}}}*/
-                computeTangentBasis(ps, uvs, ns, ts, bs);
-                std::vector<glm::vec3> ops, ons, ots, obs;
-                std::vector<glm::vec2> ouvs;
-                indexVBO_TBN(ps, uvs, ns, ts, bs, m_tris, ops, ouvs, ons, ots, obs);
-                for(unsigned int i = 0; i < ops.size(); ++i)
-                {
-                    Vertex v(ops[i], ons[i], ouvs[i], color, ots[i]);
-                    m_verts.push_back(v);
-                }
-                computeBSphere();
-            }/*}}}*/
-
-            void makeMeSphere(int nbTheta=10, int nbPhi=-1, const glm::vec4& color=glm::vec4(1,1,1,1))/*{{{*/
-            {
-                if(nbPhi<0)
-                    nbPhi=nbTheta;
-                m_verts.clear();
-                m_tris.clear();
-                float dtheta=M_PI/nbTheta;
-                float dphi=2*M_PI/nbPhi;
-                for(int i = 0; i < nbTheta; ++i)
-                {
-                    for(int j = 0; j < nbPhi; ++j)
-                    {
-                        for(int u = 0; u < 2; ++u)
-                        {
-                            for(int v = 0; v < 2; ++v)
-                            {
-                                float phi=(j+u)*dphi;
-                                float theta=(i+v)*dtheta;
-                                glm::vec3 p(cos(phi)*sin(theta),sin(phi)*sin(theta), cos(theta));
-                                glm::vec3 n=glm::normalize(p);
-                                glm::vec3 t(-sin(phi),cos(phi),0);
-                                glm::vec2 uv(phi/(2*M_PI),theta/M_PI);
-                                Vertex vert(p,n,uv,color,t);
-                                m_verts.push_back(vert);
-                            }
-                        }
-                        // first triangle uv= (0,0), (0,1), (1,0)
-                        m_tris.push_back(4*(i*nbPhi+j));
-                        m_tris.push_back(4*(i*nbPhi+j)+1);
-                        m_tris.push_back(4*(i*nbPhi+j)+2);
-                        // second triangle uv= (1,0), (0,1), (1,1)
-                        m_tris.push_back(4*(i*nbPhi+j)+2);
-                        m_tris.push_back(4*(i*nbPhi+j)+1);
-                        m_tris.push_back(4*(i*nbPhi+j)+3);
-                    }
-                }
-                computeBSphere();
-            }/*}}}*/
-
-            void computeBSphere()/*{{{*/
-            {
-                glm::vec3 center(0,0,0);
-                for( const Vertex& vertex : m_verts)
-                {
-                    const glm::vec3& v=vertex.position;
-                    center+=v;
-                }
-                unsigned int nbverts=m_verts.size();
-                center/=nbverts;
-                float r2=0;
-                for( const Vertex& vertex : m_verts)
-                {
-                    const glm::vec3& v=vertex.position;
-                    float newR2=glm::length2(center-v);
-                    if(newR2>=r2)
-                        r2=newR2;
-                }
-                float r=std::sqrt(r2);
-                bSphere= Sphere(center, r);
-            }
-            /*}}}*/
-
-
-            bool intersect(const Ray& ray, float& distHit) const/*{{{*/
-            {
-                bool reached=false;
-                /*!todo: Picking Lab Exercise 1: Compute the HIT or return false*//*{{{*/
-                /*! For each triangle
-                 *  1 - Compute the three vertices (v0, v1, v2)
-                 *  2 - Call intersectTriangle 
-                 *  3 - If there is a hit, check if closest and if not too close
-                 *      (tMin)
-                 *  4 - Don't forget to UPDATE distHit
-                 *  
-                 *  Then modify the intersectTriangle method below
-                 * */
-                /*}}}*/
-                return reached;
-            }
-            /*}}}*/     
-
-            const Mesh& asMesh() const{/*{{{*/
-                return *this;
-            }/*}}}*/
-
-        protected:
-            bool intersectTriangle(const Ray& ray, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& distHit) const/*{{{*/
-            {
-                /*!todo: Picking Lab Exercise 1: Compute the hit*//*{{{*/
-                /*! You will implement the linear system in barycentric coords
-                 *  (beta, gamma, t) where t is the location on the ray
-                 *  1 - Create the columns of the system
-                 *  (c1,c2,c3) (beta, gamma, t)^T = b
-                 *  2 - Solve it using Cramer's rule
-                 *
-                 *  No need to solve all unknowns: return false as soon as you
-                 *  can!!
-                 * */
-                return true;
-                /*}}}*/
-            }
-            /*}}}*/
-
-        public:
-            std::vector<Vertex> m_verts;
-            std::vector<unsigned int> m_tris;
-        };/*}}}*/
 
         /** @class Camera {{{
          *  @brief Camera control
@@ -1184,19 +778,415 @@ namespace ensi
         };
         /*}}}*/
 
-        /** @class Instance {{{
-         *  @brief Instance of objects
+        /** @class SceneObject {{{
+         *  @brief A abstract class for objects in the scene
          *
-         *  An Instance is an object at a partticular location in space. {{{
-         *  It can be associated with a material as well.}}}
          */
-        class Instance
+        class SceneObject
         {
         public:
-            std::string objectname;
-            std::string instancename;
-            std::string materialname;
-            glm::mat4 mw;
+            virtual ~SceneObject (){}
+        
+            virtual SceneObject* clone() const=0;
+
+            virtual const Mesh& asMesh() const=0;
+
+            virtual void computeBSphere()=0;
+
+            virtual bool intersect(const Ray& ray, float& distHit) const=0;
+
+            bool intersectBoundingSphere(const Ray& ray, float& distHit) const/*{{{*/
+            {
+                /*!todo: Picking Lab Exercise 3: Implement bounding sphere reject{{{*/
+                /*! Reject occurs under any of the following conditions
+                 *  1 - The distance from the sphere center to its projection
+                 *      P(tProj) on the ray is larger than the sphere radius
+                 *  2 - P(tMin) is outside the sphere and further than P(tProj)
+                 * */
+                /*}}}*/
+                return true;
+            }
+            /*}}}*/
+
+        protected:
+            Sphere bSphere;
+        };/*}}}*/
+
+        /** @class Mesh {{{
+         *  @brief A mesh class
+         *  It is designed to encapsulate a c++ representation, made of vertices
+         *  and triangles. It also allows to setup a GPU equivalent thanks to
+         *  the methods setupVAO
+         *
+         */
+        class Mesh: public SceneObject
+        {
+        public:
+            Mesh() {}
+            
+            Mesh(const Mesh& other):SceneObject(other), m_verts(other.m_verts), m_tris(other.m_tris)/*{{{*/
+            {
+                
+            }/*}}}*/
+
+            virtual ~Mesh(){}
+
+            SceneObject* clone() const{/*{{{*/
+                return new Mesh(*this);
+            }/*}}}*/
+
+
+            void setupVAO(Resources& resources, const std::string& vaoname,  GLenum usage=GL_STATIC_DRAW) const/*{{{*/
+            {
+                /* Make the cpu buffers{{{*/
+                //!note could probably be avoided with interlaced buffers
+                std::vector<glm::vec3> positions;
+                std::vector<glm::vec3> normals;
+                std::vector<glm::vec3> tangents;
+                std::vector<glm::vec4> colors;
+                std::vector<glm::vec2> uvs;
+                for(const Vertex& vertex : m_verts)
+                {
+                    positions.push_back(vertex.position);
+                    normals.push_back(vertex.normal);
+                    tangents.push_back(vertex.tangent);
+                    colors.push_back(vertex.color);
+                    uvs.push_back(vertex.uv);
+                }
+                /*}}}*/
+
+                /* Set up the VAO{{{*/
+                // Bind the vao
+                GLuint vao=resources.vaos.at(vaoname);
+                glBindVertexArray(vao);      
+
+                std::vector<GLuint> vbos=resources.vbos.at(vaoname);
+                GLuint pbuffer = vbos[0];
+                GLuint nbuffer = vbos[1]; 
+                GLuint tbuffer = vbos[2]; 
+                GLuint cbuffer = vbos[3]; 
+                GLuint uvbuffer= vbos[4]; 
+
+                unsigned int nbverts=m_verts.size();
+                glBindBuffer(GL_ARRAY_BUFFER, pbuffer);
+                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec3), &positions[0], usage);
+                glVertexAttribPointer(
+                                      Program::attributes["vertexPosition"],  /* attribute */
+                                      3,                                /* size of the attribute */
+                                      GL_FLOAT,                         /* type */
+                                      GL_FALSE,                         /* normalized? */
+                                      0,                /* stride */
+                                      (void*)0                          /* array buffer offset */
+                                     );
+                glEnableVertexAttribArray(Program::attributes["vertexPosition"]);
+
+                glBindBuffer(GL_ARRAY_BUFFER, nbuffer);
+                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec3), &normals[0], usage);
+                glVertexAttribPointer(
+                                      Program::attributes["vertexNormal"],  /* attribute */
+                                      3,                                /* size of the attribute */
+                                      GL_FLOAT,                         /* type */
+                                      GL_FALSE,                         /* normalized? */
+                                      0,                /* stride */
+                                      (void*)0                          /* array buffer offset */
+                                     );
+                glEnableVertexAttribArray(Program::attributes["vertexNormal"]);
+
+                glBindBuffer(GL_ARRAY_BUFFER, tbuffer);
+                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec3), &tangents[0], usage);
+                glVertexAttribPointer(
+                                      Program::attributes["vertexTangent"],  /* attribute */
+                                      3,                                /* size of the attribute */
+                                      GL_FLOAT,                         /* type */
+                                      GL_FALSE,                         /* normalized? */
+                                      0,                /* stride */
+                                      (void*)0                          /* array buffer offset */
+                                     );
+                glEnableVertexAttribArray(Program::attributes["vertexTangent"]);
+
+                glBindBuffer(GL_ARRAY_BUFFER, cbuffer);
+                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec4), &colors[0], usage);
+                glVertexAttribPointer(
+                                      Program::attributes["vertexColor"],  /* attribute */
+                                      4,                                /* size of the attribute */
+                                      GL_FLOAT,                         /* type */
+                                      GL_FALSE,                         /* normalized? */
+                                      0,                /* stride */
+                                      (void*)0                          /* array buffer offset */
+                                     );
+                glEnableVertexAttribArray(Program::attributes["vertexColor"]);
+
+                glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+                glBufferData(GL_ARRAY_BUFFER, nbverts*sizeof(glm::vec2), &uvs[0], usage);
+                glVertexAttribPointer(
+                                      Program::attributes["vertexUV"],  /* attribute */
+                                      2,                                /* size of the attribute */
+                                      GL_FLOAT,                         /* type */
+                                      GL_FALSE,                         /* normalized? */
+                                      0,                /* stride */
+                                      (void*)0                          /* array buffer offset */
+                                     );
+                glEnableVertexAttribArray(Program::attributes["vertexUV"]);
+
+                GLuint ibo=resources.ibos.at(vaoname);
+                unsigned int nbtris=m_tris.size();
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, nbtris*sizeof(unsigned int), &m_tris[0], usage);
+                resources.ibonbtris[vaoname]=nbtris;
+                /*}}}*/
+            }/*}}}*/
+
+            void recomputeTangents()/*{{{*/
+            {
+                std::vector<glm::vec3> ps;
+                std::vector<glm::vec2> uvs;
+                std::vector<glm::vec3> ns;
+                std::vector<glm::vec3> ts;
+                std::vector<glm::vec3> bs;
+                for( unsigned int k : m_tris)
+                {
+                    const Vertex& v=m_verts[k];
+                    ps.push_back(v.position);
+                    uvs.push_back(v.uv);
+                    ns.push_back(v.normal);
+                }
+                computeTangentBasis(ps, uvs, ns, ts, bs);
+                for( unsigned int k : m_tris)
+                {
+                    Vertex& v=m_verts[k];
+                    v.tangent=ts[k];
+                }
+            }/*}}}*/
+
+            void loadObj(const std::string& filepath, const glm::vec4& color=glm::vec4(1,1,1,1)){/*{{{*/
+                m_verts.clear();
+                m_tris.clear();
+                std::vector<glm::vec3> ps;
+                std::vector<glm::vec2> uvs;
+                std::vector<glm::vec3> ns;
+                bool res = loadOBJ(filepath.c_str(), ps, uvs, ns);
+                if(not res)
+                {
+                    std::cout<<"Error loading file: "<<filepath<<std::endl;
+                    return;
+                }
+                std::vector<glm::vec3> ts;
+                std::vector<glm::vec3> bs;
+                computeTangentBasis(ps, uvs, ns, ts, bs);
+                std::vector<glm::vec3> ops, ons, ots, obs;
+                std::vector<glm::vec2> ouvs;
+                indexVBO_TBN(ps, uvs, ns, ts, bs, m_tris, ops, ouvs, ons, ots, obs);
+                for(unsigned int i = 0; i < ops.size(); ++i)
+                {
+                    Vertex v(ops[i], ons[i], ouvs[i], color, ots[i]);
+                    m_verts.push_back(v);
+                }
+                computeBSphere();
+            }/*}}}*/
+
+            void makeMeCube(const glm::vec4& color=glm::vec4(1,1,1,1))/*{{{*/
+            {
+                m_verts.clear();
+                m_tris.clear();
+                std::vector<glm::vec3> ps, ns, ts, bs;
+                std::vector<glm::vec2> uvs;
+                //make the front face (y=0)/*{{{*/
+                glm::vec3 p0(0,0,0);
+                glm::vec3 p1(1,0,0);
+                glm::vec3 p2(1,0,1);
+                glm::vec3 p3(0,0,1);
+                glm::vec3 n0(0,-1,0);
+                glm::vec3 n1(0,-1,0);
+                glm::vec3 n2(0,-1,0);
+                glm::vec3 n3(0,-1,0);  
+                glm::vec3 pp0(0,1,0);
+                glm::vec3 pp1(0,1,1);
+                glm::vec3 pp2(1,1,1);
+                glm::vec3 pp3(1,1,0);
+                glm::vec3 nn0(0,1,0);
+                glm::vec3 nn1(0,1,0);
+                glm::vec3 nn2(0,1,0);
+                glm::vec3 nn3(0,1,0);  /*}}}*/
+                // for each axis create two faces
+                int nbverts=0;
+                for(int i = 0; i < 3; ++i)/*{{{*/
+                {
+                    int ix=i, iy=(i+1)%3, iz=(i+2)%3;
+                    // first face
+                    ps.push_back(glm::vec3(p0[ix]-0.5,p0[iy]-0.5,p0[iz]-0.5));
+                    ns.push_back(glm::vec3(n0[ix],n0[iy],n0[iz]));
+                    uvs.push_back(glm::vec2(p0[0],p0[2]));
+
+                    ps.push_back(glm::vec3(p1[ix]-0.5,p1[iy]-0.5,p1[iz]-0.5));
+                    ns.push_back(glm::vec3(n1[ix],n1[iy],n1[iz]));
+                    uvs.push_back(glm::vec2(p1[0],p1[2]));
+
+                    ps.push_back(glm::vec3(p2[ix]-0.5,p2[iy]-0.5,p2[iz]-0.5));
+                    ns.push_back(glm::vec3(n2[ix],n2[iy],n2[iz]));
+                    uvs.push_back(glm::vec2(p2[0],p2[2]));
+                    
+                    nbverts+=3;
+
+                    ps.push_back(glm::vec3(p0[ix]-0.5,p0[iy]-0.5,p0[iz]-0.5));
+                    ns.push_back(glm::vec3(n0[ix],n0[iy],n0[iz]));
+                    uvs.push_back(glm::vec2(p0[0],p0[2]));
+
+                    ps.push_back(glm::vec3(p2[ix]-0.5,p2[iy]-0.5,p2[iz]-0.5));
+                    ns.push_back(glm::vec3(n2[ix],n2[iy],n2[iz]));
+                    uvs.push_back(glm::vec2(p2[0],p2[2]));
+                    
+                    ps.push_back(glm::vec3(p3[ix]-0.5,p3[iy]-0.5,p3[iz]-0.5));
+                    ns.push_back(glm::vec3(n3[ix],n3[iy],n3[iz]));
+                    uvs.push_back(glm::vec2(p3[0],p3[2]));
+
+                    nbverts+=3;
+
+                    // second face
+                    ps.push_back(glm::vec3(pp0[ix]-0.5,pp0[iy]-0.5,pp0[iz]-0.5));
+                    ns.push_back(glm::vec3(nn0[ix],nn0[iy],nn0[iz]));
+                    uvs.push_back(glm::vec2(pp0[0],pp0[2]));
+
+                    ps.push_back(glm::vec3(pp1[ix]-0.5,pp1[iy]-0.5,pp1[iz]-0.5));
+                    ns.push_back(glm::vec3(nn1[ix],nn1[iy],nn1[iz]));
+                    uvs.push_back(glm::vec2(pp1[0],pp1[2]));
+
+                    ps.push_back(glm::vec3(pp2[ix]-0.5,pp2[iy]-0.5,pp2[iz]-0.5));
+                    ns.push_back(glm::vec3(nn2[ix],nn2[iy],nn2[iz]));
+                    uvs.push_back(glm::vec2(pp2[0],pp2[2]));
+                    
+                    nbverts+=3;
+
+                    ps.push_back(glm::vec3(pp0[ix]-0.5,pp0[iy]-0.5,pp0[iz]-0.5));
+                    ns.push_back(glm::vec3(nn0[ix],nn0[iy],nn0[iz]));
+                    uvs.push_back(glm::vec2(pp0[0],pp0[2]));
+
+                    ps.push_back(glm::vec3(pp2[ix]-0.5,pp2[iy]-0.5,pp2[iz]-0.5));
+                    ns.push_back(glm::vec3(nn2[ix],nn2[iy],nn2[iz]));
+                    uvs.push_back(glm::vec2(pp2[0],pp2[2]));
+                    
+                    ps.push_back(glm::vec3(pp3[ix]-0.5,pp3[iy]-0.5,pp3[iz]-0.5));
+                    ns.push_back(glm::vec3(nn3[ix],nn3[iy],nn3[iz]));
+                    uvs.push_back(glm::vec2(pp3[0],pp3[2]));
+
+                    nbverts+=3;
+                }/*}}}*/
+                computeTangentBasis(ps, uvs, ns, ts, bs);
+                std::vector<glm::vec3> ops, ons, ots, obs;
+                std::vector<glm::vec2> ouvs;
+                indexVBO_TBN(ps, uvs, ns, ts, bs, m_tris, ops, ouvs, ons, ots, obs);
+                for(unsigned int i = 0; i < ops.size(); ++i)
+                {
+                    Vertex v(ops[i], ons[i], ouvs[i], color, ots[i]);
+                    m_verts.push_back(v);
+                }
+                computeBSphere();
+            }/*}}}*/
+
+            void makeMeSphere(int nbTheta=10, int nbPhi=-1, const glm::vec4& color=glm::vec4(1,1,1,1))/*{{{*/
+            {
+                if(nbPhi<0)
+                    nbPhi=nbTheta;
+                m_verts.clear();
+                m_tris.clear();
+                float dtheta=M_PI/nbTheta;
+                float dphi=2*M_PI/nbPhi;
+                for(int i = 0; i < nbTheta; ++i)
+                {
+                    for(int j = 0; j < nbPhi; ++j)
+                    {
+                        for(int u = 0; u < 2; ++u)
+                        {
+                            for(int v = 0; v < 2; ++v)
+                            {
+                                float phi=(j+u)*dphi;
+                                float theta=(i+v)*dtheta;
+                                glm::vec3 p(cos(phi)*sin(theta),sin(phi)*sin(theta), cos(theta));
+                                glm::vec3 n=glm::normalize(p);
+                                glm::vec3 t(-sin(phi),cos(phi),0);
+                                glm::vec2 uv(phi/(2*M_PI),theta/M_PI);
+                                Vertex vert(p,n,uv,color,t);
+                                m_verts.push_back(vert);
+                            }
+                        }
+                        // first triangle uv= (0,0), (0,1), (1,0)
+                        m_tris.push_back(4*(i*nbPhi+j));
+                        m_tris.push_back(4*(i*nbPhi+j)+1);
+                        m_tris.push_back(4*(i*nbPhi+j)+2);
+                        // second triangle uv= (1,0), (0,1), (1,1)
+                        m_tris.push_back(4*(i*nbPhi+j)+2);
+                        m_tris.push_back(4*(i*nbPhi+j)+1);
+                        m_tris.push_back(4*(i*nbPhi+j)+3);
+                    }
+                }
+                computeBSphere();
+            }/*}}}*/
+
+            void computeBSphere()/*{{{*/
+            {
+                glm::vec3 center(0,0,0);
+                for( const Vertex& vertex : m_verts)
+                {
+                    const glm::vec3& v=vertex.position;
+                    center+=v;
+                }
+                unsigned int nbverts=m_verts.size();
+                center/=nbverts;
+                float r2=0;
+                for( const Vertex& vertex : m_verts)
+                {
+                    const glm::vec3& v=vertex.position;
+                    float newR2=glm::length2(center-v);
+                    if(newR2>=r2)
+                        r2=newR2;
+                }
+                float r=std::sqrt(r2);
+                bSphere= Sphere(center, r);
+            }
+            /*}}}*/
+
+            bool intersect(const Ray& ray, float& distHit) const/*{{{*/
+            {
+                bool reached=false;
+                /*!todo: Picking Lab Exercise 1: Compute the HIT or return false{{{*/
+                /*! For each triangle
+                 *  1 - Compute the three vertices (v0, v1, v2)
+                 *  2 - Call intersectTriangle 
+                 *  3 - If there is a hit, check if closest and if not too close
+                 *      (tMin)
+                 *  4 - Don't forget to UPDATE distHit
+                 *  
+                 *  Then modify the intersectTriangle method below
+                 * */
+                /*}}}*/
+                return reached;
+            }
+            /*}}}*/     
+
+            const Mesh& asMesh() const{/*{{{*/
+                return *this;
+            }/*}}}*/
+
+        protected:
+            bool intersectTriangle(const Ray& ray, const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2, float& distHit) const/*{{{*/
+            {
+                /*!todo: Picking Lab Exercise 1: Compute the hit{{{*/
+                /*! You will implement the linear system in barycentric coords
+                 *  (beta, gamma, t) where t is the location on the ray
+                 *  1 - Create the columns of the system
+                 *  (c1,c2,c3) (beta, gamma, t)^T = b
+                 *  2 - Solve it using Cramer's rule
+                 *
+                 *  No need to solve all unknowns: return false as soon as you
+                 *  can!!
+                 * */
+                return true;
+                /*}}}*/
+            }
+            /*}}}*/
+
+        public:
+            std::vector<Vertex> m_verts;
+            std::vector<unsigned int> m_tris;
         };/*}}}*/
 
         /** @class Scene {{{
@@ -1234,16 +1224,6 @@ namespace ensi
                 return *instance;
             }/*}}}*/
 
-            bool containsInstance(const std::string& instancename) const /*{{{*/
-            {
-                return objectnames.find(instancename)!=objectnames.end();
-            }/*}}}*/
-
-            bool containsObject(const std::string& objectname) const /*{{{*/
-            {
-                return objects.find(objectname)!=objects.end();
-            }/*}}}*/
-
             void addObject(const std::string& objectname, const SceneObject& object, const glm::mat4& mw=glm::mat4(), const std::string& instancename="")/*{{{*/
             {
                 objects[objectname]=object.clone();
@@ -1259,8 +1239,83 @@ namespace ensi
                 objectnames[instancename]=objectname;
             }/*}}}*/
 
+            void drawObject(const std::string& instancename, const std::string& matname, bool special4picked=true) const /*{{{*/
+            {
+                const GLSLMaterial& mat=materials.at(matname);
+                renderer->renderInstance( instancename, mat, special4picked);
+            }/*}}}*/
+            
+            bool intersectInstance(const std::string& instancename, const Ray& ray, float& distHit) const/*{{{*/
+            {
+                const std::string& objectname=objectnames.at(instancename);
+                const SceneObject& object=*objects.at(objectname);
+                // compute the ray in Model coords
+                glm::mat4 vm=glm::inverse(controls.worldViewMatrix.top()*mwMatrices.at(instancename));
 
+                Ray rayInModel(ray);
+                rayInModel.changeFrame(vm);
+                bool reachable=object.intersectBoundingSphere(rayInModel, distHit);
+                if(not reachable)
+                    return false;
+                return object.intersect(rayInModel, distHit);
+                return false;
+            }
+            /*}}}*/
 
+            const std::string& performPicking(int x, int y)/*{{{*/
+            {
+                pickedname="";
+                float distNearest=std::numeric_limits<float>::max();
+                /*!todo: Picking Lab Exercise 2: Compute the ray in Eye coordinate space {{{*/
+                /*! 1 - get the NDC coords of (x,y) at the near plane 
+                 *      Beware y is inversed use height-y-1 instead
+                 *  2 - Get the cooresponding clipping coords (beware that we deal
+                 *      with a vector not a point)
+                 *  3 - Get the eye coords of the ray direction (raydirEye)
+                 *  4 - Same for the ray origin (rayorigEye)
+                 *  5 - provide a consistent value for tMin
+                 *  NB: You may place the ray origin at the camera center or at
+                 *      the near plane
+                 * */
+                //! This are the three variable to compute
+                glm::vec4 rayorigEye(0,0,0,1);
+                glm::vec3 raydirEye(0,0,-1);
+                float tMin=0;
+                /*}}}*/
+                for(auto& entry : objectnames)
+                {
+                    float distHit=std::numeric_limits<float>::max();
+                    const std::string& instancename=entry.first;
+                    Ray ray(rayorigEye, raydirEye, tMin);
+                    if (not intersectInstance(instancename, ray, distHit))
+                        continue;
+                    if(distHit<distNearest and instancename.substr(instancename.size()-2,2)!="SV")
+                    {
+                        distNearest=distHit;
+                        pickedname=instancename;
+                    }
+                }
+                return pickedname;
+            }
+            /*}}}*/
+
+            void setRenderer(Renderer* r)/*{{{*/
+            {
+                renderer=r;
+            }/*}}}*/
+
+            bool containsInstance(const std::string& instancename) const /*{{{*/
+            {
+                return objectnames.find(instancename)!=objectnames.end();
+            }/*}}}*/
+
+            bool containsObject(const std::string& objectname) const /*{{{*/
+            {
+                return objects.find(objectname)!=objects.end();
+            }/*}}}*/
+
+        public:
+            /*!note Assimp related: not validated yet{{{*/
             GLuint processTexture(aiTexture* t)/*{{{*/
             {                          
                 //!fixme: need to use a texture loading lib like SOIL 
@@ -1397,72 +1452,8 @@ namespace ensi
                     processNode(child, mw, meshnames);
                 }
             }/*}}}*/
-
-            //        (since they are stored in the scene)
-            void drawObject(const std::string& instancename, const std::string& matname, bool special4picked=true) const /*{{{*/
-            {
-                const GLSLMaterial& mat=materials.at(matname);
-                renderer->renderInstance( instancename, mat, special4picked);
-            }/*}}}*/
-            
-            bool intersectInstance(const std::string& instancename, const Ray& ray, float& distHit) const/*{{{*/
-            {
-                const std::string& objectname=objectnames.at(instancename);
-                const SceneObject& object=*objects.at(objectname);
-                // compute the ray in Model coords
-                glm::mat4 vm=glm::inverse(controls.worldViewMatrix.top()*mwMatrices.at(instancename));
-
-                Ray rayInModel(ray);
-                rayInModel.changeFrame(vm);
-                bool reachable=object.intersectBoundingSphere(rayInModel, distHit);
-                if(not reachable)
-                    return false;
-                return object.intersect(rayInModel, distHit);
-                return false;
-            }
             /*}}}*/
 
-            const std::string& performPicking(int x, int y)/*{{{*/
-            {
-                pickedname="";
-                float distNearest=std::numeric_limits<float>::max();
-                /*!todo: Picking Lab Exercise 2: Compute the ray in Eye coordinate space *//*{{{*/
-                /*! 1 - get the NDC coords of (x,y) at the near plane 
-                 *      Beware y is inversed use height-y-1 instead
-                 *  2 - Get the cooresponding clipping coords (beware that we deal
-                 *      with a vector not a point)
-                 *  3 - Get the eye coords of the ray direction (raydirEye)
-                 *  4 - Same for the ray origin (rayorigEye)
-                 *  5 - provide a consistent value for tMin
-                 *  NB: You may place the ray origin at the camera center or at
-                 *      the near plane
-                 * */
-                //! This are the three variable to compute
-                glm::vec4 rayorigEye(0,0,0,1);
-                glm::vec3 raydirEye(0,0,-1);
-                float tMin=0;
-                /*}}}*/
-                for(auto& entry : objectnames)
-                {
-                    float distHit=std::numeric_limits<float>::max();
-                    const std::string& instancename=entry.first;
-                    Ray ray(rayorigEye, raydirEye, tMin);
-                    if (not intersectInstance(instancename, ray, distHit))
-                        continue;
-                    if(distHit<distNearest and instancename.substr(instancename.size()-2,2)!="SV")
-                    {
-                        distNearest=distHit;
-                        pickedname=instancename;
-                    }
-                }
-                return pickedname;
-            }
-            /*}}}*/
-
-            void setRenderer(Renderer* r)/*{{{*/
-            {
-                renderer=r;
-            }/*}}}*/
 
         private:
             Scene():controls(0)/*{{{*/
@@ -1505,13 +1496,10 @@ namespace ensi
                 glGenBuffers(5, &resources.vbos[objectname][0]);
                 resources.vaos[objectname]=vao;
                 GLenum usage=GL_STATIC_DRAW;
-                mesh.setupVAO(vao, resources.vbos[objectname], usage);
-                unsigned int* nbtris=&resources.ibonbtris[objectname];
                 GLuint ibo;
                 glGenBuffers(1, &ibo);
                 resources.ibos[objectname]=ibo;
-                ibo=resources.ibos[objectname];
-                mesh.setupIBO(ibo, *nbtris, usage);
+                mesh.setupVAO(resources, objectname, usage);
             }/*}}}*/
 
             void renderInstance(const std::string& instancename, const GLSLMaterial& mat=GLSLMaterial(), bool special4picked=true) const/*{{{*/
@@ -1540,7 +1528,7 @@ namespace ensi
                 GLenum type=GL_TRIANGLES;
                 if(scene.controls.wireframe)
                     type=GL_LINES;
-                /*!todo: Picking Lab Exercise 4: Highlight selected object *//*{{{*/
+                /*!todo: Picking Lab Exercise 4: Highlight selected object {{{*/
                 /*! Right now the selected object is displayed in wireframe; You
                  *  may find a more fancy way to put it in emphasis, maybe a
                  *  nice dedicated shader
