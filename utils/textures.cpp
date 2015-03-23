@@ -14,17 +14,30 @@ static short le_short(unsigned char *bytes)/*{{{*/
 
 GLuint loadTGATexture(const std::string& imagepath, GLenum wrap_s, GLenum wrap_t, GLenum mag_filter, GLenum min_filter, bool anisotropy)/*{{{*/
 {             
-    /*!todo [Textures] exercice 1: load a texture from a file into the GPU as follows,
-     *  1) Generate a texture location in GPU
-     *  2) Make it active (bind it)
-     *  3) Load the texture file into a CPU buffer 
-     *     (using the read_tga routine from utils/textures.h)
-     *  4) Send this data to the GPU (glTexImage2D)
-     *  5) Set up the Wrap and filter parameters. 
-     *     */
-    // Create one OpenGL texture
-    GLuint textureID=0;
-    return textureID;
+  /*!todo [Textures] exercice 1: load a texture from a file into the GPU as follows,
+   *  1) Generate a texture location in GPU
+   *  2) Make it active (bind it)
+   *  3) Load the texture file into a CPU buffer 
+   *     (using the read_tga routine from utils/textures.h)
+   *  4) Send this data to the GPU (glTexImage2D)
+   *  5) Set up the Wrap and filter parameters. 
+   *     */
+  // Create one OpenGL texture
+  int width, height; 
+  GLuint textureID = 0;
+  char *data= read_tga(imagepath.c_str() , width, height);
+  
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+  glGenTextures(1, &textureID);
+  glBindTexture(GL_TEXTURE_2D, textureID);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+  
+  return textureID;
 }/*}}}*/
 
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stack>
 #include <vector>
+#include <math.h>
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>
 // matrix and vectors
@@ -109,7 +110,7 @@ void init(void)/*{{{*/
         shutDown(1);
     }/*}}}*/
     
-    /* GLFW callbak definitions *//*{{{*/
+    /* GLFW callback definitions *//*{{{*/
     glfwSetFramebufferSizeCallback(controls.window, &resize);
     glfwSetKeyCallback(controls.window, keyCallback);
     glfwSetMouseButtonCallback(controls.window, mouseButtonCallback);
@@ -170,11 +171,14 @@ void draw()/*{{{*/
     if(controls.exercise>=1)
     {
         /*!todo exercise 1: Enable back face culling *//*{{{*/
+      glEnable(GL_CULL_FACE);
         /*}}}*/
     }
     if(controls.exercise>=3)
     {
         /*!todo exercise 3: Enable depth test *//*{{{*/
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glEnable(GL_DEPTH_TEST);
         /*}}}*/
     }
     scene.drawObject("cube","simple");
@@ -184,11 +188,14 @@ void draw()/*{{{*/
     if(controls.exercise>=1)
     {
         /*!todo exercise 1: Disable back face culling *//*{{{*/
+      glDisable(GL_CULL_FACE);
         /*}}}*/
     }
     if(controls.exercise>=3)
     {
         /*!todo exercise 3: Disable depth test *//*{{{*/
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glDisable(GL_DEPTH_TEST);
         /*}}}*/
     }
 }
@@ -281,6 +288,7 @@ void makeAPerFaceColoredCube(ensi::gl::Mesh& cube)/*{{{*/
     std::vector<glm::vec3> ops, ons, ots, obs;
     std::vector<glm::vec2> ouvs;
     indexVBO_TBN(ps, uvs, ns, ts, bs, cube.m_tris, ops, ouvs, ons, ots, obs);
+    // On ajoute une couleur par face
     const glm::vec4 colors[]={glm::vec4(1,0,0,1), glm::vec4(1,1,0,1), glm::vec4(0,1,0,1), glm::vec4(0,1,1,1), glm::vec4(0,0,1,1), glm::vec4(1,0,1,1)};
     for (unsigned int i = 0; i < ops.size(); ++i)
     {
@@ -294,13 +302,20 @@ void makeAPerFaceColoredCube(ensi::gl::Mesh& cube)/*{{{*/
 inline glm::vec3 torusPoint(double theta, double phi, double R, double r)/*{{{*/
 {
     //!todo You may implement the correct formula for the torus point here
-    return glm::vec3();
+  float x, y, z;
+  x = (R+r * sin (theta)) * sin(phi);
+  y = (R+r * sin (theta)) * cos (phi);
+  z = r * cos (theta);
+  return glm::vec3(x, y, z);
 }/*}}}*/
 
 inline glm::vec3 torusNormal(double theta, double phi)/*{{{*/
 {
-    //!todo You may implement the correct formula for the torus normal here
-    return glm::vec3 ();
+  float x, y, z;
+  x= cos(theta);
+  y=sin(theta);
+  z=sin(phi);
+  return glm::vec3 ();
 }/*}}}*/
 
 void makeAColoredTorus(ensi::gl::Mesh& torus, double R, double r, int nbBins)/*{{{*/
@@ -308,10 +323,41 @@ void makeAColoredTorus(ensi::gl::Mesh& torus, double R, double r, int nbBins)/*{
     using ensi::gl::Vertex;
     torus.m_verts.clear();
     torus.m_tris.clear();
+    float theta, phi;
      /*!todo exercise 2: build up a torus {{{
       * You may find useful to implement the parametric formula in the torusPoint
       * and torusNormal functions.
       **/
+    
+    glm::vec4 color;
+    for(int i = 0; i < nbBins; i++){
+      for(int j = 0; j < nbBins; j++){
+        theta = 2*M_PI*i/nbBins;
+	phi = 2*M_PI*j/nbBins;
+	
+	if(theta == 0){
+	  color={0, 0, 0, 1};
+	}else{
+	  color = {1/theta, 2/theta, 3/theta, 1};
+	}
+	Vertex v(torusPoint(theta, phi, R, r),
+		 glm::vec3(),
+		 glm::vec2(),
+		 color,
+		 glm::vec3());
+	torus.m_verts.push_back(v);
+      }
+    }
+
+    int taille = torus.m_verts.size();
+    for(int k = 0; k < taille; k++){
+      torus.m_tris.push_back(k);
+      torus.m_tris.push_back((k+1)%taille);
+      torus.m_tris.push_back((k+nbBins)%taille);
+      torus.m_tris.push_back((k+nbBins)%taille);
+      torus.m_tris.push_back((k+1)%taille);
+      torus.m_tris.push_back((k+nbBins+1)%taille);
+    }
     /*}}}*/
 }/*}}}*/
 /*}}}*/
