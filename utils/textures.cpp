@@ -24,7 +24,7 @@ GLuint loadTGATexture(const std::string& imagepath, GLenum wrap_s, GLenum wrap_t
    *     */
   // Create one OpenGL texture
   int width, height; 
-  GLuint textureID = 0;
+  GLuint textureID;
   char *data= read_tga(imagepath.c_str() , width, height);
   
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
