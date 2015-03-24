@@ -223,13 +223,22 @@ void draw()/*{{{*/
     if(controls.exercise>=3)/*{{{*/
     {
         /*!todo exercise 3: generate mipmaps and activate them for the min filter*/
+      glBindTexture(GL_TEXTURE_2D, checkerboardTextureLoc);
+      glGenerateMipmap(GL_TEXTURE_2D);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+
         if(controls.exercise>=4)
         {
             /*!todo exercise 4: set up anisotropic filtering (using GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)*/
+	  GLfloat aFloat;
+	  glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aFloat);
+	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aFloat);
         }
         else
         {
             /*!todo exercise 4: disable anisotropic filtering*/
+	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
         }
 
     }
@@ -335,7 +344,22 @@ void makeACubeMappedCube(ensi::gl::Mesh& cube, bool correct)/*{{{*/
     /*!todo exercise 2: Create the correct uv values to have each number mapped on one of the faces *//*{{{*/
     if(correct)
     {
-        uvs={ };                         
+        uvs={ 
+	  glm::vec2(0,0.33), glm::vec2(0,0.66),  glm::vec2(0.25,0.66),
+	  glm::vec2(0,0.33),  glm::vec2(0.25,0.66), glm::vec2(0.25,0.33),
+	  glm::vec2(0.50,0.33), glm::vec2(0.50,0.66),  glm::vec2(0.75,0.66),
+	  glm::vec2(0.50,0.33),  glm::vec2(0.75,0.66), glm::vec2(0.75,0.33),
+	  //
+	  glm::vec2(0.25,0.33), glm::vec2(0.25,0.66),  glm::vec2(0.50,0.66),
+	  glm::vec2(0.25,0.33),  glm::vec2(0.50,0.66), glm::vec2(0.50,0.66),
+	  glm::vec2(0.75,0.33), glm::vec2(0.75,0.66),  glm::vec2(1,0.66),
+	  glm::vec2(0.75,0.33),  glm::vec2(1,0.66), glm::vec2(1,0.33),
+        //
+	  glm::vec2(0.25,0), glm::vec2(0.25,0.33),  glm::vec2(0.50,0.33),
+	  glm::vec2(0.25,0),  glm::vec2(0.50,0.33), glm::vec2(0.50,0),
+	  glm::vec2(0.25,0.66), glm::vec2(0.25,1),  glm::vec2(0.50,1),
+	  glm::vec2(0.25,0.66),  glm::vec2(0.50,1), glm::vec2(0.50,0.66),
+	};                         
     }
     /*}}}*/
     computeTangentBasis(ps, uvs, ns, ts, bs);
