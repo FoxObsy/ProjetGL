@@ -9,8 +9,8 @@ uniform vec3 lightdirn;
 uniform vec3 lightcolor; 
 // material properties
 uniform vec3 ambient; 
-uniform vec3 diffuse; 
-uniform vec3 specular; 
+uniform vec3 diffuse;
+uniform vec3 specular;
 uniform float shininess; 
 uniform vec3 spotpos;
 uniform vec3 spotlookat;
@@ -28,7 +28,7 @@ out vec4 fragColor;
 vec3 ComputeLightLambert(const in vec3 lightdirn, const in vec3 lightcolor, const in vec3 normal, const in vec3 mydiffuse)/*{{{*/
 {
     /*!todo exercise 1: Implement the diffuse (Lambertian) illumination model*/
-    vec3 lambert = vec3(1);  
+    vec3 lambert = lightcolor * mydiffuse * clamp(dot(lightdirn, normal), 0 , 1);  
     return lambert;
 }/*}}}*/
 
@@ -36,7 +36,7 @@ vec3 ComputeLightLambert(const in vec3 lightdirn, const in vec3 lightcolor, cons
 vec3 ComputeLightSpecular (const in vec3 lightdirn, const in vec3 lightcolor, const in vec3 normal, const in vec3 eyedirn, const in vec3 myspecular, const in float myshininess) /*{{{*/
 {
     /*!todo exercise 3: Implement the specular (Blinn-Phong) illumination model*/
-    vec3 phong = vec3(1); 
+    vec3 phong = lightcolor * myspecular * pow(clamp(dot(normalize(lightdirn + eyedirn), normal),0,1), myshininess*4);
     return phong;
 }/*}}}*/
 
@@ -52,14 +52,16 @@ void main()
          * Set the new normal in the 'fragNormal' variable
          */
         /*}}}*/
-        fragNormal = vec3(1);
+	vec3 TextureNormal_tangentspace = normalize(texture2D(normalmap, uv).rgb*2.0 - 1.0);
+        fragNormal = TextureNormal_tangentspace - position.xyz;;
     }
     fragNormal = normalize(fragNormal); 
 
     vec3 lambert = ComputeLightLambert(lightdirn, lightcolor, fragNormal, diffuse);
 
     /*!todo exercise 3: Compute the eye direction for the Phong model*//*{{{*/
-    vec3 eyedirn = vec3(1);
+    vec3 eyedirn = vec3(0, 0, 0) - position.xyz;
+    eyedirn = normalize(eyedirn);
     /*}}}*/
     float myshininess=shininess*(.8+ sin(time) * 0.5f);
     if(exercise>=5)
