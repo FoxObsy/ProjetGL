@@ -11,7 +11,7 @@
 #include "glfwMinimal.h"
 /*}}}*/
 
-GLuint vao,vbo,ibo, count, positionBuffer, indexBuffer, VertexShaderId, FragmentShaderId, ProgramId ;
+GLuint vao,vbo,ibo, count, colorBuffer, positionBuffer, indexBuffer, VertexShaderId, FragmentShaderId, ProgramId ;
 
 int main(void)/*{{{*/
 {
@@ -66,8 +66,11 @@ void initGLEW()
 
 // On visualise la Frame soit le triangle
 void renderFrame(){
+  //glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT );
-		
+	glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+
 	glUseProgram(ProgramId);
 
 	glBindVertexArray(vao);
@@ -79,7 +82,7 @@ void renderFrame(){
 
  //std::cout << "Après dessin !!!" << std::endl;
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-   glEnable(GL_CULL_FACE);
+
   glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT,0); 
 
 	glBindVertexArray(0);
@@ -111,71 +114,81 @@ void CreateVBO(){
 	};*/
 
 
- /* ESSAI AVEC LES IBO */ 
-  GLint positions[] = {
-    -1, -1, -1, //1
-    -1, -1, 1, //2
-    1, -1, 1, //3
-    1, -1, -1, //4
-    -1, 1, -1, //5
-    -1, 1, 1, //6
-    1, 1, 1, //7
-    1, 1, -1 //8
-  };
+ /* CUBE AVEC LES IBO */ 
 
-  /* faire dans le même sens sinon kaput */
+   GLint positions[] = {
+    -1, -1, 1, //0
+    1, -1, 1, //1
+    1, 1, 1, //2
+    -1, 1, 1, //3
+    -1, -1, -1, //4
+    1, -1, -1, //5
+    1, 1, -1, //6
+    -1, 1, -1 //7
+  }; 
+   
+  
   GLint indices[] = {
     // 1er triangle
-    6,
-    7,
+    0,
+    1,
     2,
     // deuxième triangle
     2,
-    3,
-    0,
+    3, //3
+    0, //0
     // 3ème triangle
-    0,
-    4,
-    7,
-    // 4ème tirangle
-    7,
-    3,
-    0,
+    3, // 7
+    2, // 3
+    6, // 0
+     // 4ème tirangle
+    6, // 0
+    7, // 4
+    3, // 7
     // 5ème triangle
-    0,
-    4,
-    1,
+    7,
+    6,
+    5,
     // 6ème
-    1,
     5,
     4,
+    7,
     // 7ème
     4,
     5,
-    7,
-    // 8ème
-    7,
-    6,
-    5,
-    // 9ème
-    5,
-    6,
-    2,
-    // 10ème
-    2,
-    5,
     1,
-    // 11 ème
+    // 8ème
     1,
     0,
-    2,
-    // 12 ème
-    2,
+    4,
+    // 9ème
+    4,
+    0,
+    3,
+    // 10ème
+    3,
     7,
-    3
+    4,
+    // 11 ème
+    1,
+    5,
+    6,
+    // 12 ème
+    6,
+    2,
+    1
   };
-
   
+  GLint colors[] = {
+    0,0,0,
+    1,0,0,
+    1,1,0,
+    0,0,1,
+    1,1,1,
+    0,1,1,
+    1,0,1,
+    0,1,0
+  };
   // TRUC QUI MARCHE	
   /*  GLfloat positions[] = {
     -0.5f,-0.5f,-0.5f, // triangle 1 : begin
@@ -236,7 +249,16 @@ void CreateVBO(){
 	glEnableVertexAttribArray(positionIndex);
 	glVertexAttribPointer(positionIndex, 3, GL_INT, GL_FALSE, 0, 0);
 
-  /* CAMERA ??!!?? */
+  /* Couleurs */
+  glGenBuffers(1, &colorBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+  GLint colorIndex = glGetAttribLocation(ProgramId, "color");
+  glEnableVertexAttribArray(colorIndex);
+  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+  glVertexAttribPointer(colorIndex, 3, GL_INT,GL_FALSE, 0,0);
+
+  /* CAMERA */
   glm::mat4 Projection = glm::perspective(90.0f, 4.0f / 3.0f, 0.1f, 100.0f);
   glm::mat4 View = glm::lookAt(glm::vec3(4,3,3),glm::vec3(0,0,0), glm::vec3(0,1,0));
   glm::mat4 Model = glm::mat4(1.0f);
@@ -266,7 +288,7 @@ void DestroyVBO(){
 	glDisableVertexAttribArray(0);
 	glDeleteBuffers(1, &positionBuffer);
   glDeleteBuffers(1, &indexBuffer);
-
+  glDeleteBuffers(1, &colorBuffer);
 	glDeleteVertexArrays(1, &vao);
 }
 
