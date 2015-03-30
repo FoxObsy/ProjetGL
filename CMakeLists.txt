@@ -56,6 +56,7 @@ add_library(utils ${UTILS_SRC})
 add_subdirectory(Minimal)
 add_subdirectory(Textures)
 add_subdirectory(Shading)
+add_subdirectory(TP0)
 ###  Sub projects  ###}}}
 
 
