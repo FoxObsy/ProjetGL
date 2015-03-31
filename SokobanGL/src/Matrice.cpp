@@ -1,9 +1,9 @@
 /**
- * @title TP3 C++
- * @author CARDI Clement, TOURREL Romain
+ * @title Matrice.cpp
+ * @brief Permet d'implémenter la matrice utile à la grille de jeu
  */
 
-#include "../include/Matrice.h"
+#include "../include/Matrice.hpp"
 
 using namespace std;
 
