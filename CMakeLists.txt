@@ -46,15 +46,14 @@ link_directories(${ASSIMP_LIBRARY_DIRS})
 ###  internal util library  ###{{{
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-set(UTILS_SRC include/lightGlAPI.hpp utils/utils.cpp utils/shaders.cpp utils/vao.cpp utils/textures.cpp
+set(UTILS_SRC include/lightGlAPI.hpp utils/utils.cpp utils/shaders.cpp utils/vao.cpp utils/textures.cpp utils/controls.cpp
   utils/objloader.cpp utils/tangentspace.cpp utils/vboindexer.cpp)
 add_library(utils ${UTILS_SRC})
 ###  internal util library  ###}}}
 
 ###  Sub projects  ###{{{
 # 2A
-add_subdirectory(TP0)
-add_subdirectory(Projet)
+add_subdirectory(exec)
 ###  Sub projects  ###}}}
 
 
