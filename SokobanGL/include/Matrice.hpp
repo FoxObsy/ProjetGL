@@ -17,7 +17,7 @@ class Matrice {
 
   unsigned int _lignes;
   unsigned int _colonnes;
-  double *_mat;
+  Case *_mat;
 		
  public:
 
@@ -26,7 +26,7 @@ class Matrice {
   Matrice(unsigned int lig,unsigned int col){
     _lignes = lig;
     _colonnes = col;
-    _mat = new double[_lignes*_colonnes];
+    _mat = new Case[_lignes*_colonnes];
   }
 		
   // Constructeur par recopie
