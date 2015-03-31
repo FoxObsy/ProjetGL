@@ -57,6 +57,7 @@ add_subdirectory(Minimal)
 add_subdirectory(Textures)
 add_subdirectory(Shading)
 add_subdirectory(TP0)
+add_subdirectory(Projet)
 ###  Sub projects  ###}}}
 
 
