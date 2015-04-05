@@ -1,6 +1,7 @@
+#ifndef CONTROLS_H
+#define CONTROLS_H
 
-
-class Controles {
+class Controls {
 
 private:
   int _x;
@@ -9,7 +10,7 @@ private:
 public:
 
   // Constructeur
-  Controles(int x=0, int y=0);
+  Controls(int x=0, int y=0);
 
   int getX();
   int getY();
@@ -22,14 +23,10 @@ public:
   void right();
   
 
-
-
-
-
 /* dans joueur :
 methodes up() down() etc qui appellent controles.up() etc, et qui mettent à jour la pos du joueur à partir de la position modifiée dans controles.
 */
 
+};
 
-
-}
+#endif

@@ -33,8 +33,8 @@ class Matrice {
   Matrice(const Matrice & m){
     _lignes = m._lignes;
     _colonnes = m._colonnes;
-    _mat = new double[_lignes*_colonnes];
-    memcpy(_mat, m._mat, sizeof(double)*_lignes*_colonnes);
+    _mat = new Case[_lignes*_colonnes];
+    memcpy(_mat, m._mat, sizeof(Case)*_lignes*_colonnes);
   }
 		
   // Constructeur par deplacement
