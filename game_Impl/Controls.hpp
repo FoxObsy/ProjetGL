@@ -27,6 +27,6 @@ public:
 methodes up() down() etc qui appellent controles.up() etc, et qui mettent à jour la pos du joueur à partir de la position modifiée dans controles.
 */
 
-}
+};
 
 #endif
