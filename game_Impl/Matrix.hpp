@@ -18,6 +18,16 @@ public:
     _matrix = new Tile[_row][_column];
   }
 
+  Matrix(String chMatrix){
+    FILE * pMatrix;
+    pMatrix = fopen(chMatrix, "r");
+    if(pMatrix == NULL){
+      perror("Error opening file");
+    }else{
+      
+    }
+  }
+
   unsigned int getRow() const;
   unsigned int getColumn() const;
   Tile **getMatrix();

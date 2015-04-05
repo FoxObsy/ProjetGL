@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 
 class Controls;
 
@@ -29,3 +32,6 @@ public:
   void left();
   void right();
   
+}
+
+#endif

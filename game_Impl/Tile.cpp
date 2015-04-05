@@ -1,4 +1,4 @@
-#include "Tile.hh"
+#include "Tile.hpp"
 #include <iostream>
 
 using namespace std;
@@ -56,6 +56,7 @@ Tile::Tile() : _isEmpty(true), _isBorder(false), _hasPlayer(false), _isTarget(fa
 // empty?
 void Tile::setEmpty(bool b) {
   _isEmpty = b;
+  if (b==true) { setReachable(); } // inutile
 }
 bool Tile::isEmpty(bool b) {
   return _isEmpty;
@@ -64,6 +65,7 @@ bool Tile::isEmpty(bool b) {
 // Border
 void Tile::setBorder(bool b) {
   _isBorder = b;
+  _isReachable = !b; // inutile
 }
 bool Tile::isBorder() {
   return _isBorder;
@@ -97,21 +99,29 @@ bool Tile::hasBox() {
 /* ----- Accessibilité ----- */
 /* _________________________ */
 
+
+/* Méthodes inutiles, seule isReachableFrom est utilisée */
+
 void Tile::setReachable() {
-  _accessible=true;
+  _isReachable=true;
 }	
 void Tile::setUnreachable() {
-  _accessible=false;
+  _isReachable=false;
 }
 
 bool Tile::isReachable() {
-  return _accessible;
+  return _isReachable;
 }
+/* ----------------------------------------------------- */
+
 
 // side : coté ou se situe le personnage par rapport à la case
 bool Tile::isReachableFrom(Tile::Side side) {
 
-  if (this.isBorder() ) { setUnreachable(); }
+  if (this.isBorder() ) { 
+    // setUnreachable(); 
+    return false;
+  }
 
   else {
 
@@ -121,25 +131,29 @@ bool Tile::isReachableFrom(Tile::Side side) {
       
       case LEFT :
 	if (this->tileRight().hasBox() || this->tileRight().isBorder()) {
-	  setUnreachable();
+	  // setUnreachable();
+	  return false;
 	}
 	break;
 	
       case RIGHT :
 	if (this->tileLeft().hasBox() || this->tileLeft().isBorder()) {
-	  setUnreachable();
+	  // setUnreachable();
+	  return false;
 	}
 	break;
 
       case UP :
 	if (this->tileDown().hasBox() || this->tileDown().isBorder()) {
-	  setUnreachable();
+	  // setUnreachable();
+	  return false;
 	}
 	break;
 	
       case DOWN :
 	if (this->tileUp().hasBox() || this->tileUp().isBorder()) {
-	  setUnreachable();
+	  // setUnreachable();
+	  return false;
 	}
 	break;
 
@@ -147,7 +161,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
     } // end if
   } // end else
 
-  return isReachable();
+  return true; // isReachable();
 }
 
 

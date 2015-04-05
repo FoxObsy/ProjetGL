@@ -1,4 +1,5 @@
-
+#ifndef TILE_H
+#define TILE_H
 
 class Tile {
 
@@ -7,7 +8,7 @@ class Tile {
   bool _isTarget;
   bool _hasPlayer;
   bool _hasBox;
-  bool _isReachable;
+  bool _isReachable; // avérée inutile
 
   Tile & tileUp;
   Tile & tileDown;
@@ -25,7 +26,20 @@ public:
       LEFT,
       RIGHT
     };
-  
+
+  // Pour le constructeur, 
+  //permet d'ajouter des options pour la création.
+  /* Avéré inutile car matrice créée avec des Tile() car
+     Les seules infos disponibles sont le nb de lignes et col au début. */
+  /*
+  enum Option
+    {
+      WITH_PLAYER,
+      WITH_TARGET,
+      WITH_BOX,
+      EMPTY
+    };
+  */
   Tile();
   
   void setEmpty(bool b = true);
@@ -61,3 +75,6 @@ public:
   Tile & tileRight();
 
 }
+
+
+#endif
