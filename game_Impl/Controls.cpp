@@ -1,8 +1,6 @@
 
 #include "Controls.hpp"
 
-
-
 public Controles::Controles(int x, int y) : _x(x), _y(y)
 {}
 

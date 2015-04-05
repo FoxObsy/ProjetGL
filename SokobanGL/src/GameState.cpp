@@ -2,23 +2,18 @@
 *	@title Boucle de jeu
 *	@author Romain Tourrel
 */
-
+#include "GameState.hpp"
 using namespace std;
 
-int main(int argc, char* argv[]){
+bool event(int move){
 
 	/* Initialisation de la partie */
 	
-	Matrix matrix = new Matrix(10,10);
-	Player player = new Personnage(0,2);
-	int nbr_target_free = matrice.getNbrTargetFree();
+	//Matrix matrix = new Matrix(10,10);
+	//Player player = new Player(0,2);
+	//int nbr_target_free = matrix.getNbrTargetFree();
 
-	GLFWwindow* window = glfwGetCurrentContext();
-  	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-	boolean end = false;
-	while(!end){
-		if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+	    if(move == 1){
 			if(matrix[player.getX()][player.getY()+1].isEmpty()){
 				matrix[player.getX()][player.getY()].setEmpty(true);
 				matrix[player.getX()][player.getY()].setPlayer(false);
@@ -28,7 +23,7 @@ int main(int argc, char* argv[]){
 			}
 			else{
 				if(matrix[player.getX()][player.getY()+1].hasBox()){
-					if(matrix[player.getX()][player.getY()+1].isAccessibleFrom(side::UP)){
+					if(matrix[player.getX()][player.getY()+1].isReachableFrom(Tile::Side::UP)){
 						if(matrix[player.getX()][player.getY()+1].hasTarget(){
 							nbr_target_free ++;
 						}
@@ -47,8 +42,9 @@ int main(int argc, char* argv[]){
 			}
 		}
 
-		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-			if(matrice[player.getX()][player.getY()-1].isEmpty()) {
+		//if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+		  if(move == 2){
+			if(matrix[player.getX()][player.getY()-1].isEmpty()) {
 				matrix[player.getX()][player.getY()].setEmpty(true);
 				matrix[player.getX()][player.getY()].setPlayer(false);
 				player.down();
@@ -57,7 +53,7 @@ int main(int argc, char* argv[]){
 			}
 			else{
 				if(matrix[player.getX()][player.getY()-1].hasBox()){
-					if(matrix[player.getX()][player.getY()-1].isAccessibleFrom(side::DOWN)){
+					if(matrix[player.getX()][player.getY()-1].isReachableFrom(Tile::Side::DOWN)){
 						matrix[player.getX()][player.getY()].setEmpty(true);
 						matrix[player.getX()][player.getY()].setPlayer(false);
 						player.down();
@@ -74,8 +70,9 @@ int main(int argc, char* argv[]){
 			}
 		}
 
-		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-			if(matrice[player.getX()+1][player.getY()].isEmpty()){
+		//if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+		 if(move == 3){
+			if(matrix[player.getX()+1][player.getY()].isEmpty()){
 				matrix[player.getX()][player.getY()].setEmpty(true);
 				matrix[player.getX()][player.getY()].setPlayer(false);
 				player.right();
@@ -84,7 +81,7 @@ int main(int argc, char* argv[]){
 			}
 			else{
 				if(matrix[player.getX()+1][player.getY()].hasBox()){
-					if(matrix[player.getX()+1][player.getY()].isAccessibleFrom(side::RIGHT)){
+					if(matrix[player.getX()+1][player.getY()].isReachableFrom(Tile::Side::RIGHT)){
 						matrix[player.getX()][player.getY()].setEmpty(true);
 						matrix[player.getX()][player.getY()].setPlayer(false);
 						player.right();
@@ -102,8 +99,9 @@ int main(int argc, char* argv[]){
 			}
 		}
 
-		if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-			if(matrice[player.getX()-1][player.getY()].isEmpty()){
+		//if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+		  if(move == 4){	
+			if(matrix[player.getX()-1][player.getY()].isEmpty()){
 				matrix[player.getX()][player.getY()].setEmpty(true);
 				matrix[player.getX()][player.getY()].setPlayer(false);	
 				player.left();
@@ -112,7 +110,7 @@ int main(int argc, char* argv[]){
 			}
 			else{
 				if(matrix[player.getX()-1][player.getY()].hasBox()){
-					if(matrix[player.getX()-1][player.getY()].isAccessibleFrom(side::LEFT))
+					if(matrix[player.getX()-1][player.getY()].isReachableFrom(Tile::Side::LEFT))
 						matrix[player.getX()][player.getY()].setEmpty(true);
 						matrix[player.getX()][player.getY()].setPlayer(false);	
 						player.left();
@@ -131,7 +129,14 @@ int main(int argc, char* argv[]){
 		if (nbr_target_free == 0){
 			end = true;
 		}
-	}
+		return end;
+}
 
-return 0;
+// Constructeur
+GameState::GameState(String file)
+{
+	matrix = new Matrix(file);
+	player = new Player(matrix.getPositionPlayerX(),matrix.getPositionPlayerY());
+	nbr_target_free = matrix.getNbrTargetFree();
+	end = false;
 }
