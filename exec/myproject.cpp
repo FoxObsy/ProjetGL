@@ -256,6 +256,10 @@ int main(void)
     MVPPlan = ProjectionMatrix * ViewMatrix * ModelMatrixPlan;
     glUniformMatrix4fv(MatrixIDPlan, 1, GL_FALSE, &MVPPlan[0][0]);
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texturePlan);
+    glUniform1i(texturePlanID, 0);
+
     //Update
     if(glfwGetKeyOnce2(window, GLFW_KEY_SPACE) == GLFW_PRESS){
       if(choiceMatrix==1){
@@ -306,6 +310,10 @@ int main(void)
     ModelMatrixRobot = moveRobot(window, ModelMatrixRobot);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
     glUniformMatrix4fv(MatrixIDRobot, 1, GL_FALSE, &MVPRobot[0][0]);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureRobot);
+    glUniform1i(textureRobotID, 0);
 
     glBindVertexArray(vaoRobot);
     glEnableVertexAttribArray(positionRobotIndex);

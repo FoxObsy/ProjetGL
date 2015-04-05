@@ -30,18 +30,18 @@ float speed = 0.05f;
 glm::mat4 computeMatricesFromInputs(GLFWwindow* window){
   
   // Controls
-  if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
+  if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS){
     if(verticalAngle < PI/2 - speed) 
       verticalAngle += speed;
   }
-  if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS){
+  if (glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS){
     if(verticalAngle > 0.0f) 
       verticalAngle -= speed;
   }
-  if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
+  if (glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS){
     horizontalAngle += speed;
   }
-  if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
+  if (glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS){
     horizontalAngle -= speed;
   }
 
@@ -62,10 +62,11 @@ glm::mat4 computeMatricesFromInputs(GLFWwindow* window){
 
 int direction = 0; //0->haut 1->gauche 2->bas 3->droite
 glm::vec3 rot, transl;
+glm::vec3 postion = glm::vec3(0.0f);
 
 glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
 
-  if(glfwGetKeyOnce(window, GLFW_KEY_W) == GLFW_PRESS){ //Haut;
+  if(glfwGetKeyOnce(window, GLFW_KEY_UP) == GLFW_PRESS){ //Haut;
     switch(direction){
     case 0: //haut
       rot = glm::vec3(0.0f);
@@ -88,7 +89,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 
-  if(glfwGetKeyOnce(window, GLFW_KEY_A) == GLFW_PRESS){ //Gauche
+  if(glfwGetKeyOnce(window, GLFW_KEY_LEFT) == GLFW_PRESS){ //Gauche
     switch(direction){
     case 0: //haut
       rot = glm::vec3(0.0f,PI/2,0.0f);
@@ -111,7 +112,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 
-  if(glfwGetKeyOnce(window, GLFW_KEY_S) == GLFW_PRESS){ //Bas
+  if(glfwGetKeyOnce(window, GLFW_KEY_DOWN) == GLFW_PRESS){ //Bas
     switch(direction){
     case 0: //haut
       rot = glm::vec3(0.0f,PI,0.0f);
@@ -134,7 +135,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 
-  if(glfwGetKeyOnce(window, GLFW_KEY_D) == GLFW_PRESS){ //Droite
+  if(glfwGetKeyOnce(window, GLFW_KEY_RIGHT) == GLFW_PRESS){ //Droite
     switch(direction){
     case 0: //haut
       rot = glm::vec3(0.0f,-PI/2,0.0f);
