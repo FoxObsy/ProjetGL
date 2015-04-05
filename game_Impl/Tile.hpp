@@ -2,12 +2,12 @@
 
 class Tile {
 
-  boolean _isEmpty;
-  boolean _isBorder;
-  boolean _isTarget;
-  boolean _hasPlayer;
-  boolean _hasBox;
-  boolean _isReachable;
+  bool _isEmpty;
+  bool _isBorder;
+  bool _isTarget;
+  bool _hasPlayer;
+  bool _hasBox;
+  bool _isReachable;
 
   Tile & tileUp;
   Tile & tileDown;
