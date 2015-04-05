@@ -4,8 +4,8 @@
  */
 
 #include "../include/Matrice.hpp"
+#include "../include/Case.hpp"
 
-using namespace std;
 
 unsigned int Matrice::getLignes() const{
   return _lignes;
@@ -23,8 +23,8 @@ Matrice & Matrice::operator= (const Matrice & m){
   if(this != &m){
     _lignes = m._lignes;
     _colonnes = m._colonnes;
-    _mat = new double[_lignes*_colonnes];
-    memcpy(_mat, m._mat, sizeof(double)*_lignes*_colonnes);
+    _mat = new Case[_lignes*_colonnes];
+    memcpy(_mat, m._mat, sizeof(Case)*_lignes*_colonnes);
   }
   return *this;
 }

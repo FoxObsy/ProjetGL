@@ -97,10 +97,10 @@ bool Tile::hasBox() {
 /* ----- Accessibilité ----- */
 /* _________________________ */
 
-bool Tile::setReachable() {
+void Tile::setReachable() {
   _accessible=true;
 }	
-bool Tile::setUnreachable() {
+void Tile::setUnreachable() {
   _accessible=false;
 }
 
