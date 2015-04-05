@@ -5,15 +5,26 @@ class Tile {
 
   bool _isEmpty;
   bool _isBorder;
+<<<<<<< HEAD
   bool _isTarget;
+=======
+  bool _hasTarget;
+>>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
   bool _hasPlayer;
   bool _hasBox;
   bool _isReachable; // avérée inutile
 
+<<<<<<< HEAD
   Tile & tileUp;
   Tile & tileDown;
   Tile & tileLeft;
   Tile & tileRight;
+=======
+  Tile* _tileUp;
+  Tile* _tileDown;
+  Tile* _tileLeft;
+  Tile* _tileRight;
+>>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
   
 
 
@@ -49,7 +60,11 @@ public:
   bool isBorder();
 
   void setTarget(bool b = true);
+<<<<<<< HEAD
   bool isTarget();
+=======
+  bool hasTarget();
+>>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
 
   void setPlayer(bool b = true);
   bool hasPlayer();
@@ -62,6 +77,7 @@ public:
   bool isReachable();
   bool isReachableFrom(Tile::Side side);
  
+<<<<<<< HEAD
   void setTileUp(const Tile & t=NULL);
   Tile & tileUp();
 
@@ -75,6 +91,21 @@ public:
   Tile & tileRight();
 
 }
+=======
+  void setTileUp(Tile & t);
+  Tile & tileUp();
+
+  void setTileDown(Tile & t);
+  Tile & tileDown();
+  
+  void setTileLeft(Tile & t);
+  Tile & tileLeft();
+
+  void setTileRight(Tile & t);
+  Tile & tileRight();
+
+};
+>>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
 
 
 #endif

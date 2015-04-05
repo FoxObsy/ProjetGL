@@ -32,6 +32,6 @@ public:
   void left();
   void right();
   
-}
+};
 
 #endif
