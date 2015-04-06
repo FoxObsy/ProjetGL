@@ -1,30 +1,30 @@
 
 #include "../include/Controls.hpp"
 
-public Controles::Controles(int x, int y) : _x(x), _y(y)
+Controls::Controls(int x, int y) : _x(x), _y(y)
 {}
 
 
 
-public int Controles::getX() { return _x; }
-public int Controles::getY() { return _y; }
-public void Controles::setX(int x){ _x=x; }
-public void Controles::setY(int y){ _y=y; }
+int Controls::getX() { return _x; }
+int Controls::getY() { return _y; }
+void Controls::setX(int x){ _x=x; }
+void Controls::setY(int y){ _y=y; }
 
 
 
-public void Controles::up() {
+void Controls::up() {
   _y++;
 }
 
-public void Controles::down() {
+void Controls::down() {
   _y--;
 }
 
-public void Controles::left() {
+void Controls::left() {
   _x--;
 }
 
-public void Controles::right() {
+void Controls::right() {
   _x++;
 }

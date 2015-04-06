@@ -1,7 +1,6 @@
 #include "../include/Matrix.hpp"
-#include "../include/Tile.hpp"
 
-Matrix Matrix::setMap(String chMatrix){
+/*Matrix Matrix::setMap(String chMatrix){
   _pathFile = chMatrix;
   ifstream fileMatrix(chMatrix, ios::binary); 
   String line;
@@ -32,25 +31,25 @@ Matrix Matrix::setMap(String chMatrix){
     }
     _row = i;
   }
-}
+  }*/
 
 Tile **Matrix::getMatrix(){
   return _matrix;
 }
 
-unsigned int Matrix::getRow(){
+int Matrix::getRow() const{
   return _row;
 }
 
-unsigned int Matrix::getColumn(){
+int Matrix::getColumn() const{
   return _column;
 }
 
-int[] Matrix::getPositionPlayer(){
+int* Matrix::getPositionPlayer(){
   int pos[2];
-  for(int i =0; i< _row; i++){
-    for(int j = 0; j< _column; j++){
-      if(_matrix[i][j]->hasPlayer){
+  for(int i =0; i < _row; i++){
+    for(int j = 0; j < _column; j++){
+      if(_matrix[i][j].hasPlayer()){
         pos[0] = i;
 	pos[1] = j;
 	return pos;
