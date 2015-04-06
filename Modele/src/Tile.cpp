@@ -1,4 +1,4 @@
-#include "../include/Tile.hpp"
+#include "Tile.hpp"
 #include <iostream>
 
 using namespace std;
@@ -8,37 +8,6 @@ using namespace std;
 // ------------------------------------------
 
 // UP
-<<<<<<< HEAD
-void Tile::setTileUp(const Tile & t) {
-  _tileUp = t;
-}
-Tile Tile::tileUp() {
-  return _tileUp;
-}
-
-// DOWN
-void Tile::setTileDown(const Tile & t) {
-  _tileDown = t;
-}
-Tile Tile::tileDown() {
-  return _tileDown;
-}
-
-// LEFT
-void Tile::setTileLeft(const Tile & t) {
-  _tileLeft = t;
-}
-Tile Tile::tileLeft() {
-  return _tileLeft;
-}
-
-// RIGHT
-void Tile::setTileRight(const Tile & t) {
-  _tileRight = t;
-}
-Tile Tile::tileRight() {
-  return _tileRight;
-=======
 void Tile::setTileUp(Tile & t) {
   _tileUp = &t;
 }
@@ -68,16 +37,12 @@ void Tile::setTileRight(Tile & t) {
 }
 Tile & Tile::tileRight() {
   return *_tileRight;
->>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
 }
 
 /* --------------------------------------- */
 
 
 // Constructeur
-<<<<<<< HEAD
-Tile::Tile() : _isEmpty(true), _isBorder(false), _hasPlayer(false), _isTarget(false), _hasBox(false), _isReachable(true)
-=======
 Tile::Tile() : _isEmpty(true), 
 	       _isBorder(false), 
 	       _hasPlayer(false), 
@@ -88,7 +53,6 @@ Tile::Tile() : _isEmpty(true),
 	       _tileDown(0),
 	       _tileLeft(0),
 	       _tileRight(0)	       
->>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
 {}
 
 
@@ -103,11 +67,7 @@ void Tile::setEmpty(bool b) {
   _isEmpty = b;
   if (b==true) { setReachable(); } // inutile
 }
-<<<<<<< HEAD
-bool Tile::isEmpty(bool b) {
-=======
 bool Tile::isEmpty() {
->>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
   return _isEmpty;
 }
 
@@ -122,11 +82,7 @@ bool Tile::isBorder() {
 
 // Target
 void Tile::setTarget(bool b) {
-<<<<<<< HEAD
-  _isTarget = b;
-=======
   _hasTarget = b;
->>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
 }
 bool Tile::hasTarget() {
   return _hasTarget;
@@ -171,22 +127,14 @@ bool Tile::isReachable() {
 // side : coté ou se situe le personnage par rapport à la case
 bool Tile::isReachableFrom(Tile::Side side) {
 
-<<<<<<< HEAD
-  if (this.isBorder() ) { 
-=======
   if (isBorder() ) { 
->>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
     // setUnreachable(); 
     return false;
   }
 
   else {
 
-<<<<<<< HEAD
-    if (this.hasBox()) {
-=======
     if (hasBox()) {
->>>>>>> 9767a7e0abc27fc7f17420089747ce6d0f5276cc
       
       switch (side) {
       
