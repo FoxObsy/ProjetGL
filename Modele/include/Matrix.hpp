@@ -18,20 +18,20 @@ private:
 public:
   Matrix():_row(0), _column(0), _matrix(0), _pathFile("") {}
 
-  /*Matrix(string chMatrix){
+  Matrix(string chMatrix){
     _pathFile = chMatrix;
     ifstream fileMatrix(_pathFile.c_str(), ios::in); 
     string line;
     int i = 0;
     bool emptyLine;
     if(fileMatrix){
+      fileMatrix >> _row >> _column;
       while(!fileMatrix.eof() && !emptyLine){
         getline(fileMatrix, line);
 	if(line == ""){
 	  emptyLine = true;
 	}else{
 	  if(i == 0){
-	    fileMatrix >> _row >> _column;
 	    _matrix = new Tile* [_row];
 	    for(int j = 0; j < _row; j++){
 	      _matrix[j] = new Tile[_column];
@@ -62,16 +62,7 @@ public:
       }
       fileMatrix.close();
     }
-    }*/
-
-  /*Matrix(string pFileMatrix){
-    _pathFile = pFileMatrix;
-    ifstream fileMatrix(_pathFile.c_str(), ios::in);
-    if(fileMatrix){
-      fileMatrix >> _row >> _column;
-      fileMatrix.close();
-    }
-    }*/
+  }
 
   //Matrix setMap(string chMatrix);
   int getRow() const;
