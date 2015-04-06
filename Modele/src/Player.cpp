@@ -3,32 +3,45 @@
 
 
 /* --- Constructeur --- */
-public Player::Player(int x, int y) : _x(x), _y(y)
+Player::Player(int x, int y) : _x(x), _y(y)
 {}
 
 
 
 /* --- Getters / Setters --- */
+int Player::getX() {
+  return _x;
+}
+void Player::setX(int x) {
+  _x = x;
+}
+int Player::getY() {
+  return _y;
+}
+void Player::setY(int y) {
+  _y = y;
+}
 
-public void Player::up() {
+
+void Player::up() {
   Controls::up();
   _x=Controls::getX();
   _y=Controls::getY();
 }
 
-public void Player::down() {
+void Player::down() {
   Controls::down();
   _x=Controls::getX();
   _y=Controls::getY();
 }
 
-public void Player::left() {
+void Player::left() {
   Controls::left();
   _x=Controls::getX();
   _y=Controls::getY();
 }
 
-public void Player::right() {
+void Player::right() {
   Controls::right();
   _x=Controls::getX();
   _y=Controls::getY();
