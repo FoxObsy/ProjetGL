@@ -64,7 +64,7 @@ int direction = 0; //0->haut 1->gauche 2->bas 3->droite
 glm::vec3 rot, transl;
 glm::vec3 postion = glm::vec3(0.0f);
 
-glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
+glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot, int &moves){
 
   if(glfwGetKeyOnce(window, GLFW_KEY_UP) == GLFW_PRESS){ //Haut;
     switch(direction){
@@ -86,6 +86,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
       break;
     }
     direction = 0;
+    moves++;
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 
@@ -109,6 +110,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
       break;
     }
     direction = 1;
+    moves++;
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 
@@ -132,6 +134,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
       break;
     }
     direction = 2;
+    moves++;
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 
@@ -155,6 +158,7 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot){
       break;
     }
     direction = 3;
+    moves++;
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
   }
 

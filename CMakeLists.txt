@@ -9,9 +9,11 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_BUILD_TYPE DEBUG)
 LINK_DIRECTORIES("~/local_install/lib")
 LINK_DIRECTORIES("/usr/local/lib")
+#LINK_DIRECTORIES("./include/AntTweakBar-1.16/lib")
 INCLUDE_DIRECTORIES("/usr/local/include")
 INCLUDE_DIRECTORIES("~/local_install/include")
 INCLUDE_DIRECTORIES("./3rd-parties/")
+INCLUDE_DIRECTORIES("./include/AntTweakBar-1.16/include/")
 ###  Settings  ###}}}
 
 ###  OpenGL  ###{{{
@@ -48,11 +50,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(UTILS_SRC include/lightGlAPI.hpp utils/utils.cpp utils/shaders.cpp utils/vao.cpp utils/textures.cpp utils/controls.cpp
   utils/objloader.cpp utils/tangentspace.cpp utils/vboindexer.cpp)
+#set(ANTTWEAKBAR_LIB ANTTWEAKBAR_116_OGLCORE_GLFW)
 add_library(utils ${UTILS_SRC})
 ###  internal util library  ###}}}
 
 ###  Sub projects  ###{{{
 # 2A
+#add_subdirectory(include)
 add_subdirectory(exec)
 ###  Sub projects  ###}}}
 
