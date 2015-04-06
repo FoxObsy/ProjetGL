@@ -1,34 +1,27 @@
 #ifndef MATRIX
 #define MATRIX
 
+
+#include "Tile.hpp"
+#include <string>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 class Matrix{
 private:
-  unsigned int _row;
-  unsigned int _column;
+  int _row;
+  int _column;
   Tile **_matrix;
-  String _pathFile;
-  int _nbTagetFree;
+  string _pathFile;
 
 public:
-  Matrix():_row(0), _column(0), _matrix(nullptr), _pathFile(nullptr), _nbTargetFree(0) {}
+  Matrix():_row(0), _column(0), _matrix(0), _pathFile("") {}
 
-  Matrix(unsigned int row, unsigned int column){
-    _row = row;
-    _column = column;
-    _pathFile = "";
-    _matrix = new Tile* [_row];
-    for(int j = 0; j < _row; j++){
-      _matrix[j] = new Tile[_column];
-    }  
-    _nbtargetFree = 0;
-  }
-
-  Matrix(String chMatrix){
-    _pathFile(chMatrix);
-    ifstream fileMatrix(chMatrix, ios::binary); 
-    String line;
+  /*Matrix(string chMatrix){
+    _pathFile = chMatrix;
+    ifstream fileMatrix(_pathFile.c_str(), ios::in); 
+    string line;
     int i = 0;
     bool emptyLine;
     if(fileMatrix){
@@ -38,36 +31,53 @@ public:
 	  emptyLine = true;
 	}else{
 	  if(i == 0){
-	    for(int j = 0; j<line.length(); j++){
-	      
-	    }
+	    fileMatrix >> _row >> _column;
+	    _matrix = new Tile* [_row];
+	    for(int j = 0; j < _row; j++){
+	      _matrix[j] = new Tile[_column];
+	    }  
 	  }else{
 	    for(int j = 0; j<line.length();j++){
 	      switch(line[j]){
 	      case 'b' :
-		_matrix[i][j]->setBox(true);
+		_matrix[i][j].setBox(true);
+		break;
 	      case 'p' :
-		_matrix[i][j]->setPlayer(true);
-	      case 'c' :
-		_matrix[i][j]->setTarget(true);
+		_matrix[i][j].setPlayer(true);
+		break;
+	      case 't' :
+		_matrix[i][j].setTarget(true);
+		break;
 	      case '-' :
-		_matrix[i][j]->setEmpty(true);
+		_matrix[i][j].setEmpty(true);
+		break;
 	      case 'x' :
-		_matrix[i][j]->setBorder(true);
+		_matrix[i][j].setBorder(true);
+		break;
 	      }
 	    }
 	  }
 	}
 	i++;
       }
+      fileMatrix.close();
     }
-  }
+    }*/
 
-  Matrix setMap(String chMatrix);
-  unsigned int getRow() const;
-  unsigned int getColumn() const;
+  /*Matrix(string pFileMatrix){
+    _pathFile = pFileMatrix;
+    ifstream fileMatrix(_pathFile.c_str(), ios::in);
+    if(fileMatrix){
+      fileMatrix >> _row >> _column;
+      fileMatrix.close();
+    }
+    }*/
+
+  //Matrix setMap(string chMatrix);
+  int getRow() const;
+  int getColumn() const;
   Tile **getMatrix();
-  int[] getPositionPlayer();
+  int* getPositionPlayer();
   
   ~Matrix(){ }
 
