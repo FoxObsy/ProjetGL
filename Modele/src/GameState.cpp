@@ -13,6 +13,7 @@ void event(int move){
 				player.up();
 				matrix[player.getX()][player.getY()].setEmpty(false);
 				matrix[player.getX()][player.getY()].setPlayer(true);
+				player.incMoves();
 			}
 			else{
 				if(matrix[player.getX()][player.getY()+1].hasBox()){
@@ -27,6 +28,7 @@ void event(int move){
 						matrix[player.getX()][player.getY()].setPlayer(true);
 						matrix[player.getX()][player.getY()+1].setEmpty(false);
 						matrix[player.getX()][player.getY()+1].setBox(true);
+						player.incMoves();
 						if(matrix[player.getX()][player.getY()+1].hasTarget()){
 							nbr_target_free --;
 						}
@@ -43,6 +45,7 @@ void event(int move){
 				player.down();
 				matrix[player.getX()][player.getY()].setEmpty(false);
 				matrix[player.getX()][player.getY()].setPlayer(true);
+				player.incMoves();
 			}
 			else{
 				if(matrix[player.getX()][player.getY()-1].hasBox()){
@@ -54,6 +57,7 @@ void event(int move){
 						matrix[player.getX()][player.getY()].setPlayer(true);
 						matrix[player.getX()][player.getY()-1].setEmpty(false);
 						matrix[player.getX()][player.getY()-1].setBox(true);
+						player.incMoves();
 						if(matrix[player.getX()][player.getY()-1].hasTarget()){
 							nbr_target_free --;
 						}
@@ -71,6 +75,7 @@ void event(int move){
 				player.right();
 				matrix[player.getX()][player.getY()].setEmpty(false);
 				matrix[player.getX()][player.getY()].setPlayer(true);
+				player.incMoves();
 			}
 			else{
 				if(matrix[player.getX()+1][player.getY()].hasBox()){
@@ -82,6 +87,7 @@ void event(int move){
 						matrix[player.getX()][player.getY()].setPlayer(true);
 						matrix[player.getX()+1][player.getY()].setEmpty(false);
 						matrix[player.getX()+1][player.getY()].setBox(true);
+						player.incMoves();
 						if(matrix[player.getX()+1][player.getY()].hasTarget()){
 							nbr_target_free --;
 						}
@@ -100,6 +106,7 @@ void event(int move){
 				player.left();
 				matrix[player.getX()][player.getY()].setEmpty(false);
 				matrix[player.getX()][player.getY()].setPlayer(true);
+				player.incMoves();
 			}
 			else{
 				if(matrix[player.getX()-1][player.getY()].hasBox()){
@@ -111,6 +118,7 @@ void event(int move){
 						matrix[player.getX()][player.getY()].setPlayer(true);
 						matrix[player.getX()-1][player.getY()].setEmpty(false);
 						matrix[player.getX()-1][player.getY()].setBox(true);
+						player.incMoves();
 						if(matrix[player.getX()-1][player.getY()].hasTarget()){
 							nbr_target_free --;
 						}
@@ -132,15 +140,25 @@ Matrix getMatrix(){
 	return matrix;
 }
 
-int getNbrTargetFree(){
-	return nbt_target_free;
+void initNbrTargetFree(){
+	int nb;
+	for(int i = 0; i<matrix.getRow();i++){
+		for(int j = 0; j<matrix.getColumn();j++){
+			if(matrix[i][j].hasTarget() && !matrix[i][j].hasBox()){
+				nbr_target_free++;
+			}
+		}
+	}
 }
 // Constructeur
 GameState::GameState(String file)
 {
-	matrix = new Matrix(file);
-	player = new Player(matrix.getPositionPlayerX(),matrix.getPositionPlayerY());
-	nbr_target_free = matrix.getNbrTargetFree();
+	matrix.setMap(file);
+	int * positionPlayer = matrix.getPositionPlayer();
+	player.setX(positionPlayer[0]);
+	player.setY(positionPlayer[1]);
+	nbr_target_free = 0;
+	initNbrTargetFree();
 	end = false;
 }
 

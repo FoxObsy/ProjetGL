@@ -15,6 +15,6 @@ GameState(String file);
 void event(int move);
 bool getEnd();
 Matrix getMatrix();
-int getNbrTargetFree();
+int initNbrTargetFree();
 
 #endif
