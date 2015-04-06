@@ -18,6 +18,8 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 
+//#include <AntTweakBar.h>
+
 #include "utils/textures.h"
 #include "utils/controls.h"
 #include "utils/objloader.h"
@@ -111,8 +113,18 @@ int main(void)
   glDepthFunc(GL_LESS);
   
   glClearColor(0.3, 0.3, 0.0, 0.0);
-
-
+  /*
+  TwInit(TW_OPENGL_CORE, NULL);
+  TwWindowSize(WIDTH, HEIGHT);
+  TwBar * GUI = TwNewBar("HUD");
+  TwSetParam(GUI, NULL, "refresh", TW_PARAM_CSTRING, 1, "0.1");
+  TwDefine(" ViewMatrix size='400 200' valueswidth=fit ");
+  double hudTime;
+  int hudMoves = 0;
+  TwAddVarRW(GUI, "Nombre de coups", TW_TYPE_INT8, &hudMoves, NULL);
+  TwAddVarRW(GUI, "Temps", TW_TYPE_DOUBLE, &hudTime, NULL);
+  */
+  int hudMoves = 0;
   /**************** Plan ********************/
   GLuint programIDPlan = shader_loader("shaderPlan.v.glsl","shaderPlan.f.glsl");
   
@@ -243,13 +255,21 @@ int main(void)
   glm::mat4 MVPPlan;
   glm::mat4 MVPRobot;
 
+
   /*********************** Boucle **************************/
 
   while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && glfwWindowShouldClose(window) == 0){
+
+    //hudTime = glfwGetTime();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ViewMatrix = computeMatricesFromInputs(window);
+    /*
+    if(mouse click){
 
+    }
+    */
     /****Plan****/
     glUseProgram(programIDPlan);
 
@@ -307,7 +327,7 @@ int main(void)
     glUseProgram(0);
     glUseProgram(programIDRobot);
 
-    ModelMatrixRobot = moveRobot(window, ModelMatrixRobot);
+    ModelMatrixRobot = moveRobot(window, ModelMatrixRobot, hudMoves);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
     glUniformMatrix4fv(MatrixIDRobot, 1, GL_FALSE, &MVPRobot[0][0]);
 
