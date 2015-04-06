@@ -1,5 +1,5 @@
-#include "Matrix.hpp"
-#include "Tile.hpp"
+#include "../include/Matrix.hpp"
+#include "../include/Tile.hpp"
 
 Tile **Matrix::getMatrix(){
   return _matrix;

@@ -1,5 +1,5 @@
-#include "Controls.hpp"
-#include "Player.hpp"
+#include "../include/Controls.hpp"
+#include "../include/Player.hpp"
 
 
 /* --- Constructeur --- */
