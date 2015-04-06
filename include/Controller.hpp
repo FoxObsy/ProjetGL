@@ -3,6 +3,7 @@
 
 class Controller{
   GameState gameState;
+  OpenGLView openGLView;
 };
 
 

@@ -14,6 +14,7 @@ while(!gameState.getEnd()){
 	openGLView.update(gameState);
 	}
 
+
 }
 return 0;
 
