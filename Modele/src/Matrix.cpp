@@ -9,6 +9,6 @@ unsigned int Matrix::getRow(){
   return _row;
 }
 
-unsigned int Matrix::getColunm(){
+unsigned int Matrix::getColumn(){
   return _column;
 }
