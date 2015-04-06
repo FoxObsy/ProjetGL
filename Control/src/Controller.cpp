@@ -1,4 +1,5 @@
-#include "../include/GameState.hpp"
+#include "../Modele/include/GameState.hpp"
+#include "../include/OpenGLView.hpp"
 using namespace std;
 
 int main(int argc, char* argv[]){
@@ -13,6 +14,7 @@ while(!gameState.getEnd()){
 	gameState.event(event);
 	openGLView.update(gameState);
 	}
+
 
 }
 return 0;

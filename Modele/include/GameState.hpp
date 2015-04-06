@@ -1,6 +1,9 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+#include "Matrix.hpp"
+#include "Player.hpp"
+
 class GameState{
 	Matrix matrix;
 	Player player;

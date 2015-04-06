@@ -1,58 +1,74 @@
 #ifndef MATRIX
 #define MATRIX
 
+
 #include "Tile.hpp"
+#include <string>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 class Matrix{
 private:
-  unsigned int _row;
-  unsigned int _column;
+  int _row;
+  int _column;
   Tile **_matrix;
+  string _pathFile;
 
 public:
-  Matrix():_row(0), _column(0), _matrix(nullptr) {}
+  Matrix():_row(0), _column(0), _matrix(0), _pathFile("") {}
 
-  Matrix(unsigned int row, unsigned int column){
-    _row = row;
-    _column = column;
-    _matrix = new Tile*[row];
-    for(int j = 0; j < _row; j++){
-      _matrix[j] = new Tile[_column];
-    }  
-  }
-
-  Matrix(String chMatrix){
-    ifstream fileMatrix(chMatrix, ios::binary); 
-    String line;
+  Matrix(string chMatrix){
+    _pathFile = chMatrix;
+    ifstream fileMatrix(_pathFile.c_str(), ios::in); 
+    string line;
     int i = 0;
     bool emptyLine;
     if(fileMatrix){
+      fileMatrix >> _row >> _column;
       while(!fileMatrix.eof() && !emptyLine){
         getline(fileMatrix, line);
-	i++;
 	if(line == ""){
 	  emptyLine = true;
-	}
-	for(int j = 0; j<line.length();j++){
-	  switch(ligne[j]){
-	  case 'b' :
-	    _matrix[i][j]->setBox(true);
-	  case 'p' :
-	    _matrix[i][j]->setPlayer(true);
-	  case 'c' :
-	    _matrix[i][j]->setTarget(true);
-	  case '-' :
-	    _matrix[i][j]->setEmpty(true);
+	}else{
+	  if(i == 0){
+	    _matrix = new Tile* [_row];
+	    for(int j = 0; j < _row; j++){
+	      _matrix[j] = new Tile[_column];
+	    }  
+	  }else{
+	    for(int j = 0; j<line.length();j++){
+	      switch(line[j]){
+	      case 'b' :
+		_matrix[i][j].setBox(true);
+		break;
+	      case 'p' :
+		_matrix[i][j].setPlayer(true);
+		break;
+	      case 't' :
+		_matrix[i][j].setTarget(true);
+		break;
+	      case '-' :
+		_matrix[i][j].setEmpty(true);
+		break;
+	      case 'x' :
+		_matrix[i][j].setBorder(true);
+		break;
+	      }
+	    }
 	  }
 	}
+	i++;
       }
+      fileMatrix.close();
     }
   }
 
-  unsigned int getRow() const;
-  unsigned int getColumn() const;
+  //Matrix setMap(string chMatrix);
+  int getRow() const;
+  int getColumn() const;
   Tile **getMatrix();
+  int* getPositionPlayer();
   
   ~Matrix(){ }
 

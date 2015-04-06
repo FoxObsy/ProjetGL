@@ -1,8 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-
-class Controls;
+// class Controls;
 
 
 class Player {
@@ -10,7 +9,8 @@ class Player {
 private:
   int _x;
   int _y;
-  Controls _controls;
+  int _moves;
+  // Controls _controls;
 
 
 
@@ -19,12 +19,22 @@ public:
   // Constructeurs
   Player(int x=0, int y=0);
 
-  // Getters / Setters
+  /* --- Getters / Setters --- */
+
+  // X
   int getX();
-  int getY();
   void setX(int x);
+
+  // Y
+  int getY();
   void setY(int y);
 
+  // Moves
+  int getMoves();
+  void incMoves();
+  void resetMoves();
+  
+  /* ------------------------ */
 
   // Méthodes de déplacement
   void up();

@@ -1,35 +1,72 @@
-#include "../include/Controls.hpp"
+// #include "../include/Controls.hpp"
 #include "../include/Player.hpp"
 
 
 /* --- Constructeur --- */
-public Player::Player(int x, int y) : _x(x), _y(y)
+Player::Player(int x, int y) : _x(x), _y(y), _moves(0)
 {}
 
 
 
 /* --- Getters / Setters --- */
-
-public void Player::up() {
-  Controls::up();
-  _x=Controls::getX();
-  _y=Controls::getY();
+int Player::getX() {
+  return _x;
+}
+void Player::setX(int x) {
+  _x = x;
+}
+int Player::getY() {
+  return _y;
+}
+void Player::setY(int y) {
+  _y = y;
 }
 
-public void Player::down() {
-  Controls::down();
-  _x=Controls::getX();
-  _y=Controls::getY();
+
+int Player::getMoves() {
+  return _moves;
+}
+void Player::incMoves() {
+  _moves++;
+}
+void Player::resetMoves() {
+  _moves = 0;
 }
 
-public void Player::left() {
-  Controls::left();
-  _x=Controls::getX();
-  _y=Controls::getY();
+/* ------------------------- */
+
+void Player::up() {
+  _y++;
+  /*
+  _controls.up();
+  _x = _controls.getX();
+  _y = _controls.getY();
+  */
 }
 
-public void Player::right() {
-  Controls::right();
-  _x=Controls::getX();
-  _y=Controls::getY();
+void Player::down() {
+  _y--;
+  /*
+  _controls.down();
+  _x = _controls.getX();
+  _y = _controls.getY();
+  */
+}
+
+void Player::left() {
+  _x--;
+  /*
+  _controls.left();
+  _x = _controls.getX();
+  _y = _controls.getY();
+  */
+}
+
+void Player::right() {
+  _x++;
+  /*
+  _controls.right();
+  _x = _controls.getX();
+  _y = _controls.getY();
+  */
 }
