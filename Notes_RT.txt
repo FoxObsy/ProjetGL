@@ -1,0 +1,35 @@
+Il me faut plusieurs fonctions dans la classe Matrix :
+
+int getPositionPlayerX(); // Renvoie la position du joueur dans la
+int getPositionPlayerY();
+int getNbrTargetFree();
+
+Classe Player :
+
+Il manque dans le cpp :
+  // Getters / Setters
+  int getX();
+  int getY();
+  void setX(int x);
+  void setY(int y);
+  
+ Dans le hpp, il y a un "class Controls;"
+
+WTF IS THAT ? (ptet que tu as voulu mettre #include "Controls.hpp")
+
+Classe Tile :
+
+dans le .hpp :
+
+il manque un ';' après l'acolade de fin de class 
+
+class Tile {
+
+} ';'
+
+J'ai des HEAD dans le fichier, corruption du fichier ?
+
+dans le .cpp :
+
+J'ai des HEAD dans le fichier, corruption du fichier ?
+
