@@ -20,6 +20,7 @@ Matrix Matrix::setMap(string chMatrix){
 	  for(int j = 0; j < _row; j++){
 	    _matrix[j] = new Tile[_column];
 	  }  
+	  cout << "allocation matrice ok" << endl;
 	}else{
 	  for(int j = 0; j<line.length();j++){
 	    switch(line[j]){
