@@ -17,9 +17,9 @@ Matrix Matrix::setMap(string chMatrix){
 	emptyLine = true;
       }else{
 	if(i == 0){
-	  _matrix = new Tile* [_column];
-	  for(int j = 0; j < _column; j++){
-	    _matrix[j] = new Tile[_row];
+	  _matrix = new Tile* [_row];
+	  for(int j = 0; j < _row; j++){
+	    _matrix[j] = new Tile[_column];
 	  }
 	  cout << "allocation matrice ok" << endl;
 	}else{
