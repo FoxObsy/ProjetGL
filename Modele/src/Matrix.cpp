@@ -12,6 +12,7 @@ Matrix Matrix::setMap(string chMatrix){
     cout << _column << endl;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
+      cout << line.length() - 1 << endl;
       if(line == ""){
 	emptyLine = true;
       }else{
@@ -23,6 +24,7 @@ Matrix Matrix::setMap(string chMatrix){
 	  cout << "allocation matrice ok" << endl;
 	}else{
 	  for(int j = 0; j<(line.length() - 1);j++){
+	    cout << "colonne nb :" << j << endl;
 	    switch(line[j]){
 	    case 'b' :
 	      _matrix[i][j].setBox(true);
@@ -43,6 +45,7 @@ Matrix Matrix::setMap(string chMatrix){
 	  }
 	}
       }
+      cout << "nb ligne :" << i << endl;
       i++;
     }
     fileMatrix.close();
