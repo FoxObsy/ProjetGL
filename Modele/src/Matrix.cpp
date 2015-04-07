@@ -103,8 +103,8 @@ void Matrix::AffMatrix(){
 void Matrix::attribSideTiles() {
   for (int i = 1; i<_row-1; i++){
     for(int j = 1; j < _column-1; j++){
-      getMatrix()[i][j].setTileUp(&getMatrix()[i-1][j]);
-      getMatrix()[i][j].setTileDown(&getMatrix()[i+1][j]);
+      getMatrix()[i][j].setTileUp(&getMatrix()[i+1][j]);
+      getMatrix()[i][j].setTileDown(&getMatrix()[i-1][j]);
       getMatrix()[i][j].setTileLeft(&getMatrix()[i][j+1]);
       getMatrix()[i][j].setTileRight(&getMatrix()[i][j-1]);
     }
