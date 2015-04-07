@@ -127,7 +127,7 @@ int main(void)
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   
-  glClearColor(0.3, 0.3, 0.0, 0.0);
+  glClearColor(0.0, 0.5, 0.5, 0.0);
   /*
   TwInit(TW_OPENGL_CORE, NULL);
   TwWindowSize(WIDTH, HEIGHT);
@@ -264,7 +264,6 @@ int main(void)
   Matrix map = gameState.getMatrix();
   int mapRow = map.getRow();
   int mapColumn = map.getColumn();
-  std::cout << mapRow << " - " << mapColumn << std::endl;
   glm::vec3 translations[/*mapRow * mapColumn*/70];
   int nbBoxes = 0;
   float offset = 0.1f;
@@ -283,14 +282,17 @@ int main(void)
   /**********************************************************/
 
   GLuint MatrixIDBloc = glGetUniformLocation(programIDBloc, "MVP");
+  GLuint MatrixIDLvl = glGetUniformLocation(programIDLvl, "MVP");
   GLuint MatrixIDRobot = glGetUniformLocation(programIDRobot, "MVP");
   
   glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
   glm::mat4 ViewMatrix;
-  glm::mat4 ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(0.0f,-0.8f,0.0f));
-  glm::mat4 ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(0.0f,-0.7f,0.5f));
-  //offset robot -> z+0.5f
+  glm::mat4 ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(5.5f,0.1f,-3.0f));
+  glm::mat4 ModelMatrixLvl = glm::rotate(glm::mat4(1.0),-PI/2,glm::vec3(0.0f,1.0f,0.0f));
+  glm::mat4 ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(3.5f,0.1f,0.0f));
+  //offset lvl1 : robot -> x+3.5f y+0.1f z+0.0f                                                   bloc  -> x+5.5f y+0.1f z-3.0f 
   glm::mat4 MVPBloc;
+  glm::mat4 MVPLvl;
   glm::mat4 MVPRobot;
 
 
@@ -313,6 +315,7 @@ int main(void)
     glUseProgram(programIDRobot);
 
     ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves);
+    updateMatrix(translations, gameState, nbBoxes);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
     glUniformMatrix4fv(MatrixIDRobot, 1, GL_FALSE, &MVPRobot[0][0]);
 
@@ -334,8 +337,8 @@ int main(void)
     /****Level****/
     glUseProgram(programIDLvl);
 
-    MVPBloc = ProjectionMatrix * ViewMatrix * ModelMatrixBloc;
-    glUniformMatrix4fv(MatrixIDBloc, 1, GL_FALSE, &MVPBloc[0][0]);
+    MVPLvl = ProjectionMatrix * ViewMatrix * ModelMatrixLvl;
+    glUniformMatrix4fv(MatrixIDLvl, 1, GL_FALSE, &MVPLvl[0][0]);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureLvl);
@@ -363,8 +366,8 @@ int main(void)
     glBindTexture(GL_TEXTURE_2D, textureBloc);
     glUniform1i(textureBlocID, 0);
 
-    //updateMatrix(translations, gameState, nbBoxes);
     for(int i=0; i<nbBoxes; i++){
+      //std::cout << glm::to_string(translations[i]) << std::endl;
       std::stringstream ss;
       std::string index;
       ss << i; 
