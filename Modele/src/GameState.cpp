@@ -10,8 +10,11 @@ void GameState::event(int move){
     if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::DOWN)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-      cout << "MOUVEMENT POSSIBLE" <<endl;
+      cout << "ancien player x:" << player.getX() <<endl;
+      cout << "ancien player y:" << player.getY() <<endl;
       player.up();
+       cout << "nouveau player x:" << player.getX() <<endl;
+      cout << "nouveau player y:" << player.getY() <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
@@ -30,7 +33,11 @@ void GameState::event(int move){
     if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::UP)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
+      cout << "ancien player x:" << player.getX() <<endl;
+      cout << "ancien player y:" << player.getY() <<endl;
       player.down();
+       cout << "nouveau player x:" << player.getX() <<endl;
+      cout << "nouveau player y:" << player.getY() <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
@@ -49,7 +56,11 @@ void GameState::event(int move){
     if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::LEFT)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
+      cout << "ancien player x:" << player.getX() <<endl;
+      cout << "ancien player y:" << player.getY() <<endl;
       player.right();
+       cout << "nouveau player x:" << player.getX() <<endl;
+      cout << "nouveau player y:" << player.getY() <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
@@ -69,7 +80,11 @@ void GameState::event(int move){
     if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::RIGHT)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
+     cout << "ancien player x:" << player.getX() <<endl;
+      cout << "ancien player y:" << player.getY() <<endl;
       player.left();
+       cout << "nouveau player x:" << player.getX() <<endl;
+      cout << "nouveau player y:" << player.getY() <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
@@ -211,8 +226,8 @@ GameState::GameState(string file)
 {
   matrix.setMap(file);
   int * positionPlayer = matrix.getPositionPlayer();
-  player.setX(positionPlayer[1]);
-  player.setY(positionPlayer[0]);
+  player.setX(positionPlayer[0]);
+  player.setY(positionPlayer[1]);
   nbr_target_free = 0;
   initNbrTargetFree();
   end = false;
