@@ -126,8 +126,16 @@ int main(void)
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
-  
-  glClearColor(0.0, 0.5, 0.5, 0.0);
+  /*
+  if(lvl.equals("1")){
+    glClearColor(0.0, 0.5, 0.5, 0.0);
+  }
+  else if(lvl.equals("2")){
+    glClearColor(0.0, 0.5, 0.5, 0.0);
+  }
+  else{*/
+    glClearColor(0.0, 0.5, 0.5, 0.0);
+    //}
   /*
   TwInit(TW_OPENGL_CORE, NULL);
   TwWindowSize(WIDTH, HEIGHT);
@@ -287,7 +295,7 @@ int main(void)
   
   glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
   glm::mat4 ViewMatrix;
-  glm::mat4 ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(5.5f,0.1f,-3.0f));
+  glm::mat4 ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(4.5f,0.1f,-3.0f));
   glm::mat4 ModelMatrixLvl = glm::rotate(glm::mat4(1.0),-PI/2,glm::vec3(0.0f,1.0f,0.0f));
   glm::mat4 ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(3.5f,0.1f,0.0f));
   //offset lvl1 : robot -> x+3.5f y+0.1f z+0.0f                                                   bloc  -> x+5.5f y+0.1f z-3.0f 

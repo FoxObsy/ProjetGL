@@ -19,10 +19,10 @@
 #define PI glm::pi<float>()
 
 char keyOnce[GLFW_KEY_LAST + 1];
-#define glfwGetKeyOnce(WINDOW, KEY)             \
-    (glfwGetKey(WINDOW, KEY) ?              \
-     (keyOnce[KEY] ? false : (keyOnce[KEY] = true)) :   \
-     (keyOnce[KEY] = false))
+#define glfwGetKeyOnce(WINDOW, KEY)			\
+  (glfwGetKey(WINDOW, KEY) ?				\
+   (keyOnce[KEY] ? false : (keyOnce[KEY] = true)) :	\
+   (keyOnce[KEY] = false))
 
 float radius = 10.0f;
 float speed = 0.05f;
@@ -90,7 +90,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 1;
     moves++;
-    gameState.event(3);
+    gameState.event(4);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -100,6 +100,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     else{
       ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
     }
+    gameState.getMatrix().AffMatrix();
   }
 
   if(glfwGetKeyOnce(window, GLFW_KEY_LEFT) == GLFW_PRESS){ //Gauche
@@ -133,6 +134,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     else{
       ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
     }
+    gameState.getMatrix().AffMatrix();
   }
 
   if(glfwGetKeyOnce(window, GLFW_KEY_DOWN) == GLFW_PRESS){ //Bas
@@ -156,7 +158,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 2;
     moves++;
-    gameState.event(4);
+    gameState.event(3);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -166,6 +168,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     else{
       ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
     }
+    gameState.getMatrix().AffMatrix();
   }
 
   if(glfwGetKeyOnce(window, GLFW_KEY_RIGHT) == GLFW_PRESS){ //Droite
@@ -199,15 +202,16 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     else{
       ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
     }
+    gameState.getMatrix().AffMatrix();
   }
   /*
-  if(glfwGetKeyOnce(window, GLFW_KEY_F) == GLFW_PRESS){
+    if(glfwGetKeyOnce(window, GLFW_KEY_F) == GLFW_PRESS){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, glm::vec3(0.0f,1.0f,0.0f));
-  }
+    }
 
-  if(glfwGetKeyOnce(window, GLFW_KEY_R) == GLFW_PRESS){
+    if(glfwGetKeyOnce(window, GLFW_KEY_R) == GLFW_PRESS){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, glm::vec3(0.0f,-1.0f,0.0f));
-  }
+    }
   */
   return ModelMatrixRobot;
 }
