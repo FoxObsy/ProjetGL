@@ -73,7 +73,7 @@ GLuint shader_loader(std::string vertex, std::string fragment){
   return programid;
 }
 
-void updateMatrix(glm::vec3* translations, GameState gameState, int nb){
+void updateMatrix(glm::vec3* translations, int* targetBoxes, GameState gameState, int nb){
   Matrix map = gameState.getMatrix();
   int nbBoxes = 0;
   float offset = 0.1f;
@@ -84,7 +84,14 @@ void updateMatrix(glm::vec3* translations, GameState gameState, int nb){
 	translation.y = 0.0f;
 	translation.x = -(float)x + offset;
 	translation.z = (float)z + offset;
-	translations[nbBoxes++] = translation;
+	translations[nbBoxes] = translation;
+	if(map.getMatrix()[x][z].hasTarget()){
+	  targetBoxes[nbBoxes] = 1;
+	}
+	else{
+	  targetBoxes[nbBoxes] = 0;
+	}
+	nbBoxes++;
       }
     }
   }
@@ -272,7 +279,7 @@ int main(void)
   Matrix map = gameState.getMatrix();
   int mapRow = map.getRow();
   int mapColumn = map.getColumn();
-  glm::vec3 translations[/*mapRow * mapColumn*/110];
+  glm::vec3 *translations = new glm::vec3[mapRow * mapColumn];
   int nbBoxes = 0;
   float offset = 0.1f;
   for(int x=0; x<mapRow; x++){
@@ -285,6 +292,10 @@ int main(void)
 	translations[nbBoxes++] = translation;
       }
     }
+  }
+  int *targetBoxes = new int[nbBoxes];
+  for(int i=0; i<nbBoxes; i++){
+    targetBoxes[i] = 0;
   }
 
   /**********************************************************/
@@ -313,17 +324,12 @@ int main(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ViewMatrix = computeMatricesFromInputs(window);
-    /*
-    if(mouse click){
-
-    }
-    */
 
     /****Robot****/
     glUseProgram(programIDRobot);
 
     ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves);
-    updateMatrix(translations, gameState, nbBoxes);
+    updateMatrix(translations, targetBoxes, gameState, nbBoxes);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
     glUniformMatrix4fv(MatrixIDRobot, 1, GL_FALSE, &MVPRobot[0][0]);
 
@@ -375,13 +381,15 @@ int main(void)
     glUniform1i(textureBlocID, 0);
 
     for(int i=0; i<nbBoxes; i++){
-      //std::cout << glm::to_string(translations[i]) << std::endl;
       std::stringstream ss;
       std::string index;
       ss << i; 
       index = ss.str(); 
       GLuint translID = glGetUniformLocation(programIDBloc, ("transl[" + index + "]").c_str());
       glUniform3f(translID, translations[i].x, translations[i].y, translations[i].z);
+      GLuint targetBoxID = glGetUniformLocation(programIDBloc, "target");
+      glUniform1i(targetBoxID, targetBoxes[i]);
+      //std::cout << targetBoxes[i] << std::endl;
     }
 
     glBindVertexArray(vaoBloc);
