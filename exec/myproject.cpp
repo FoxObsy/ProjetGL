@@ -126,16 +126,16 @@ int main(void)
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
-  /*
-  if(lvl.equals("1")){
+  
+  if(lvl=="1"){
     glClearColor(0.0, 0.5, 0.5, 0.0);
   }
-  else if(lvl.equals("2")){
-    glClearColor(0.0, 0.5, 0.5, 0.0);
+  else if(lvl=="2"){
+    glClearColor(0.5, 0.0, 0.5, 0.0);
   }
-  else{*/
-    glClearColor(0.0, 0.5, 0.5, 0.0);
-    //}
+  else{
+    glClearColor(0.5, 0.5, 0.0, 0.0);
+  }
   /*
   TwInit(TW_OPENGL_CORE, NULL);
   TwWindowSize(WIDTH, HEIGHT);
@@ -272,7 +272,7 @@ int main(void)
   Matrix map = gameState.getMatrix();
   int mapRow = map.getRow();
   int mapColumn = map.getColumn();
-  glm::vec3 translations[/*mapRow * mapColumn*/70];
+  glm::vec3 translations[/*mapRow * mapColumn*/110];
   int nbBoxes = 0;
   float offset = 0.1f;
   for(int x=0; x<mapRow; x++){
