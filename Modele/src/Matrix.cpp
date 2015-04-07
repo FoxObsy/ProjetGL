@@ -7,7 +7,7 @@ Matrix Matrix::setMap(string chMatrix){
   int i = 0;
   bool emptyLine;
   if(fileMatrix){
-    fileMatrix >> _row >> _column;
+    fileMatrix >> _column >> _row;
     cout << _row << endl;
     cout << _column << endl;
     while(!fileMatrix.eof() && !emptyLine){
@@ -18,7 +18,7 @@ Matrix Matrix::setMap(string chMatrix){
       }else{
 	if(i == 0){
 	  _matrix = new Tile* [_column];
-	  for(int j = 0; j < _row; j++){
+	  for(int j = 0; j < _column; j++){
 	    _matrix[j] = new Tile[_row];
 	  }
 	  cout << "allocation matrice ok" << endl;
