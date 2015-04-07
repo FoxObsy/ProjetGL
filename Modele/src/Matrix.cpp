@@ -14,27 +14,27 @@ Matrix Matrix::setMap(string chMatrix){
 	emptyLine = true;
       }else{
 	if(i == 0){
-	  _matrix = new Tile* [_row + 1];
-	  for(int j = 0; j < _row + 1; j++){
+	  _matrix = new Tile* [_row];
+	  for(int j = 0; j < _row; j++){
 	    _matrix[j] = new Tile[_column];
 	  }
 	}else{
 	  for(int j = 0; j<_column;j++){
 	    switch(line[j]){
 	    case 'b' :
-	      _matrix[i][j].setBox(true);
+	      _matrix[i-1][j].setBox(true);
 	      break;
 	    case 'p' :
-	      _matrix[i][j].setPlayer(true);
+	      _matrix[i-1][j].setPlayer(true);
 	      break;
 	    case 't' :
-	      _matrix[i][j].setTarget(true);
+	      _matrix[i-1][j].setTarget(true);
 	      break;
 	    case '-' :
-	      _matrix[i][j].setEmpty(true);
+	      _matrix[i-1][j].setEmpty(true);
 	      break;
 	    case 'x' :
-	      _matrix[i][j].setBorder(true);
+	      _matrix[i-1][j].setBorder(true);
 	      break;
 	    }
 	  }
@@ -91,7 +91,7 @@ void Matrix::AffMatrix(){
       }
       else if(_matrix[i][j].hasPlayer()){
 	cout << 'p';
-	}else{
+      }else{
 	cout << '-';
       }
     }
