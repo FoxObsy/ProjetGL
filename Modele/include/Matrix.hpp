@@ -69,6 +69,7 @@ public:
   int getColumn() const;
   Tile **getMatrix();
   int* getPositionPlayer();
+  void AffMatrix();
   
   ~Matrix(){ }
 
