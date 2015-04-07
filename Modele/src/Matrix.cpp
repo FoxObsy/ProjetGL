@@ -78,13 +78,15 @@ void Matrix::AffMatrix(){
     for(int j = 0; j < _column; j++){
       if(_matrix[i][j].hasBox()){
 	cout << 'b';
+      }else if(_matrix[i][j].hasBox() && _matrix[i][j].hasTarget()){
+	cout << 'B';
       }
       if(_matrix[i][j].hasTarget()){
 	cout << 't';
       }else if(_matrix[i][j].isEmpty()){
 	cout << '-';
       }else if(_matrix[i][j].hasTarget() && _matrix[i][j].hasPlayer()){
-	cout << 'P'
+	cout << 'P';
       }
       if(_matrix[i][j].isBorder()){
 	cout << 'x';
