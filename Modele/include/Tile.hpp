@@ -63,16 +63,16 @@ public:
   bool isReachableFrom(Tile::Side side);
  
   void setTileUp(Tile* t);
-  Tile tileUp();
+  Tile* tileUp();
 
   void setTileDown(Tile* t);
-  Tile tileDown();
+  Tile* tileDown();
   
   void setTileLeft(Tile* t);
-  Tile tileLeft();
+  Tile* tileLeft();
 
   void setTileRight(Tile* t);
-  Tile tileRight();
+  Tile* tileRight();
 
 };
 
