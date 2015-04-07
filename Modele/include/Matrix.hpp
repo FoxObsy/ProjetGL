@@ -73,11 +73,11 @@ public:
   void AffMatrix();
   
   ~Matrix(){ 
-    for(int i = 0; i<_row; i++){
+    /*for(int i = 0; i<_row; i++){
       delete[] _matrix[i];
     }
     delete[] _matrix;
-  }
+    }*/
 
 };
 
