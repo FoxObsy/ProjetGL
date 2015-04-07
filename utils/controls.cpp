@@ -26,7 +26,7 @@ char keyOnce[GLFW_KEY_LAST + 1];
 
 float radius = 10.0f;
 float speed = 0.05f;
-float horizontalAngle = PI/2;
+float horizontalAngle = -PI/2;
 float verticalAngle = PI/2 - speed;
 
 glm::mat4 computeMatricesFromInputs(GLFWwindow* window){
@@ -69,7 +69,41 @@ glm::vec3 postion = glm::vec3(0.0f);
 glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMatrixRobot, int &moves){
 
   int* oldPosition = gameState.getMatrix().getPositionPlayer();
-  if(glfwGetKeyOnce(window, GLFW_KEY_LEFT) == GLFW_PRESS){ //Haut;
+  if(glfwGetKeyOnce(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+    switch(direction){
+    case 1: //haut
+      rot = glm::vec3(0.0f);
+      transl = glm::vec3(-1.0f,0.0f,0.0f);
+      break;
+    case 4: //gauche
+      rot = glm::vec3(0.0f,-PI/2,0.0f);
+      transl = glm::vec3(0.0f,0.0f,-1.0f);
+      break;
+    case 2: //bas
+      rot = glm::vec3(0.0f,PI,0.0f);
+      transl = glm::vec3(1.0f,0.0f,0.0f);
+      break;
+    case 3: //droite
+      rot = glm::vec3(0.0f,PI/2,0.0f);
+      transl = glm::vec3(0.0f,0.0f,1.0f);
+      break;
+    }
+    direction = 1;
+    moves++;
+    gameState.event(4);
+    int* newPosition = gameState.getMatrix().getPositionPlayer();
+    std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
+    std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
+    if(newPosition[0] - oldPosition[0] || newPosition[1] - oldPosition[1]){
+      ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    }
+    else{
+      ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
+    }
+    gameState.getMatrix().AffMatrix();
+  }
+
+  if(glfwGetKeyOnce(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
     switch(direction){
     case 1: //haut
       rot = glm::vec3(0.0f,PI/2,0.0f);
@@ -90,40 +124,6 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 4;
     moves++;
-    gameState.event(4);
-    int* newPosition = gameState.getMatrix().getPositionPlayer();
-    std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
-    std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
-    if(newPosition[0] - oldPosition[0] || newPosition[1] - oldPosition[1]){
-      ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
-    }
-    else{
-      ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
-    }
-    gameState.getMatrix().AffMatrix();
-  }
-
-  if(glfwGetKeyOnce(window, GLFW_KEY_UP) == GLFW_PRESS){ //Gauche
-    switch(direction){
-    case 1: //haut -
-      rot = glm::vec3(0.0f);
-      transl = glm::vec3(-1.0f,0.0f,0.0f);
-      break;
-    case 4: //gauche -> haut
-      rot = glm::vec3(0.0f,-PI/2,0.0f);
-      transl = glm::vec3(0.0f,0.0f,-1.0f);
-      break;
-    case 2: //bas -> droite
-      rot = glm::vec3(0.0f,PI,0.0f);
-      transl = glm::vec3(1.0f,0.0f,0.0f);
-      break;
-    case 3: //droite -> bas
-      rot = glm::vec3(0.0f,PI/2,0.0f);
-      transl = glm::vec3(0.0f,0.0f,1.0f);
-      break;
-    }
-    direction = 1;
-    moves++;
     gameState.event(1);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
@@ -137,41 +137,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     gameState.getMatrix().AffMatrix();
   }
 
-  if(glfwGetKeyOnce(window, GLFW_KEY_RIGHT) == GLFW_PRESS){ //Bas
-    switch(direction){
-    case 1: //haut
-      rot = glm::vec3(0.0f,-PI/2,0.0f);
-      transl = glm::vec3(0.0f,0.0f,-1.0f);
-      break;
-    case 4: //gauche
-      rot = glm::vec3(0.0f,PI,0.0f);
-      transl = glm::vec3(1.0f,0.0f,0.0f);
-      break;
-    case 2: //bas
-      rot = glm::vec3(0.0f,PI/2,0.0f);
-      transl = glm::vec3(0.0f,0.0f,1.0f);
-      break;
-    case 3: //droite
-      rot = glm::vec3(0.0f);
-      transl = glm::vec3(-1.0f,0.0f,0.0f);
-      break;
-    }
-    direction = 3;
-    moves++;
-    gameState.event(3);
-    int* newPosition = gameState.getMatrix().getPositionPlayer();
-    std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
-    std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
-    if(newPosition[0] - oldPosition[0] || newPosition[1] - oldPosition[1]){
-      ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
-    }
-    else{
-      ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
-    }
-    gameState.getMatrix().AffMatrix();
-  }
-
-  if(glfwGetKeyOnce(window, GLFW_KEY_DOWN) == GLFW_PRESS){ //Droite
+  if(glfwGetKeyOnce(window, GLFW_KEY_UP) == GLFW_PRESS){
     switch(direction){
     case 1: //haut
       rot = glm::vec3(0.0f,PI,0.0f);
@@ -191,6 +157,40 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
       break;
     }
     direction = 2;
+    moves++;
+    gameState.event(3);
+    int* newPosition = gameState.getMatrix().getPositionPlayer();
+    std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
+    std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
+    if(newPosition[0] - oldPosition[0] || newPosition[1] - oldPosition[1]){
+      ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    }
+    else{
+      ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
+    }
+    gameState.getMatrix().AffMatrix();
+  }
+
+  if(glfwGetKeyOnce(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+    switch(direction){
+    case 1: //haut
+      rot = glm::vec3(0.0f,-PI/2,0.0f);
+      transl = glm::vec3(0.0f,0.0f,-1.0f);
+      break;
+    case 4: //gauche
+      rot = glm::vec3(0.0f,PI,0.0f);
+      transl = glm::vec3(1.0f,0.0f,0.0f);
+      break;
+    case 2: //bas
+      rot = glm::vec3(0.0f,PI/2,0.0f);
+      transl = glm::vec3(0.0f,0.0f,1.0f);
+      break;
+    case 3: //droite
+      rot = glm::vec3(0.0f);
+      transl = glm::vec3(-1.0f,0.0f,0.0f);
+      break;
+    }
+    direction = 3;
     moves++;
     gameState.event(2);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
