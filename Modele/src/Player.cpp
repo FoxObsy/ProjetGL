@@ -54,7 +54,7 @@ void Player::down() {
 }
 
 void Player::left() {
-  _x--;
+  _x++;
   /*
   _controls.left();
   _x = _controls.getX();
@@ -63,7 +63,7 @@ void Player::left() {
 }
 
 void Player::right() {
-  _x++;
+  _x--;
   /*
   _controls.right();
   _x = _controls.getX();
