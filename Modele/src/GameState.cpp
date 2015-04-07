@@ -8,35 +8,36 @@ using namespace std;
 void GameState::event(int move){
   if(move == 1){
     if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::DOWN)){
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
+      cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       player.up();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
+        cout << "CAISSE DETECTE" <<endl;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
 	  nbr_target_free --;
 	}
       }
-
     }
   }
 
  if(move == 2){
     if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::UP)){
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
+      cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       player.down();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
+        cout << "CAISSE DETECTE" <<endl;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
 	  nbr_target_free --;
 	}
       }
@@ -45,16 +46,17 @@ void GameState::event(int move){
   }
  if(move == 3){
     if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::LEFT)){
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
+      cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       player.right();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
+        cout << "CAISSE DETECTE" <<endl;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
 	  nbr_target_free --;
 	}
       }
@@ -64,16 +66,17 @@ void GameState::event(int move){
 
  if(move == 4){
     if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::RIGHT)){
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
+      cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       player.left();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
+        cout << "CAISSE DETECTE" <<endl;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
 	  nbr_target_free --;
 	}
       }
@@ -200,6 +203,7 @@ void GameState::initNbrTargetFree(){
       }
     }
   }
+  cout << "COMPTE LE NB DE TARGET" <<endl;
 }
 // Constructeur
 GameState::GameState(string file)
@@ -211,5 +215,6 @@ GameState::GameState(string file)
   nbr_target_free = 0;
   initNbrTargetFree();
   end = false;
+  cout << "INIT MATRICE BIEN PASSE" <<endl;
 }
 
