@@ -13,6 +13,7 @@ LINK_DIRECTORIES("/usr/local/lib")
 INCLUDE_DIRECTORIES("/usr/local/include")
 INCLUDE_DIRECTORIES("~/local_install/include")
 INCLUDE_DIRECTORIES("./3rd-parties/")
+INCLUDE_DIRECTORIES("./Modele")
 INCLUDE_DIRECTORIES("./include/AntTweakBar-1.16/include/")
 ###  Settings  ###}}}
 
@@ -48,8 +49,8 @@ link_directories(${ASSIMP_LIBRARY_DIRS})
 ###  internal util library  ###{{{
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-set(UTILS_SRC include/lightGlAPI.hpp utils/utils.cpp utils/shaders.cpp utils/vao.cpp utils/textures.cpp utils/controls.cpp
-  utils/objloader.cpp utils/tangentspace.cpp utils/vboindexer.cpp)
+set(UTILS_SRC include/lightGlAPI.hpp utils/utils.cpp utils/shaders.cpp utils/vao.cpp utils/textures.cpp utils/controls.cpp utils/objloader.cpp utils/tangentspace.cpp utils/vboindexer.cpp
+Modele/src/GameState.cpp Modele/src/Matrix.cpp Modele/src/Player.cpp Modele/src/Tile.cpp)
 #set(ANTTWEAKBAR_LIB ANTTWEAKBAR_116_OGLCORE_GLFW)
 add_library(utils ${UTILS_SRC})
 ###  internal util library  ###}}}
@@ -78,6 +79,7 @@ endmacro(copy_files)
 ### Copying resources in the runtime directory (images, shaders,...)
 copy_files("resources/*.tga" ${CMAKE_BINARY_DIR})
 copy_files("resources/*.obj" ${CMAKE_BINARY_DIR})
+copy_files("resources/*.txt" ${CMAKE_BINARY_DIR})
 copy_files("resources/*.glsl" ${CMAKE_BINARY_DIR})
 ###  Copying resources (shaders, images,...)  ###}}}
 

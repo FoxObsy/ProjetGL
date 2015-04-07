@@ -24,17 +24,14 @@
 #include "utils/controls.h"
 #include "utils/objloader.h"
 
+#include "include/GameState.hpp"
+
 #define WIDTH 1024
 #define HEIGHT 768
 #define PI glm::pi<float>()
 
-char keyOnce2[GLFW_KEY_LAST + 1];
-#define glfwGetKeyOnce2(WINDOW, KEY)             \
-    (glfwGetKey(WINDOW, KEY) ?              \
-     (keyOnce2[KEY] ? false : (keyOnce2[KEY] = true)) :   \
-     (keyOnce2[KEY] = false))
-
 GLFWwindow* window;
+GameState gameState;
 
 char* file_contents(std::string name, GLint* l){
   std::string code;
@@ -75,7 +72,25 @@ GLuint shader_loader(std::string vertex, std::string fragment){
   return programid;
 }
 
-/********************************************************************************/
+glm::vec3* updateMatrix(GameState gameState, int nb){
+  Matrix map = gameState.getMatrix();
+  int nbBoxes = 0;
+  glm::vec3 translations[nb];
+  for(int x=0; x<map.getRow(); x++){
+    for(int z=0; z<map.getColumn(); z++){
+      if(map.getMatrix()[x][z].hasBox()){
+	glm::vec3 translation;
+	translation.y = 0.0f;
+	translation.x = -(float)x + offset;
+	translation.z = (float)z + offset;
+	translations[nbBoxes++] = translation;
+      }
+    }
+  }
+  return translations;
+}
+
+/******************************************************************************/
 
 int main(void)
 {
@@ -206,42 +221,25 @@ int main(void)
   glBindVertexArray(0);
   
   /***************** Test Matrice *****************/
-
-  int brique[5][5] = {{1,1,1,1,1},
-		      {1,0,0,0,1},
-		      {1,0,1,0,1},
-		      {1,0,0,0,1},
-		      {1,1,1,1,1}};
-  glm::vec3 translations[25];
-  int brique2[5][5] = {{1,0,0,0,1},
-		       {0,1,0,1,0},
-		       {0,0,1,0,0},
-		       {0,1,0,1,0},
-		       {1,0,0,0,1}};
-  glm::vec3 translations2[25];
-  int nbBrique1 = 0;
-  int nbBrique2 = 0;
+  
+  gameState = GameState("lvl1.txt");
+  Matrix map = gameState.getMatrix();
+  unsigned int mapRow = map.getRow();
+  unsigned int mapColumn = map.getColumn();
+  glm::vec3 translations[mapRow * mapColumn];
+  int nbBoxes = 0;
   float offset = 0.1f;
-  for(int x=0; x<5; x+=1){
-    for(int z=0; z<5; z+=1){
-      if(brique[x][z]){
+  for(int x=0; x<mapRow; x++){
+    for(int z=0; z<mapColumn; z++){
+      if(map.getMatrix()[x][z].hasBox()){
 	glm::vec3 translation;
 	translation.y = 0.0f;
 	translation.x = -(float)x + offset;
 	translation.z = (float)z + offset;
-	translations[nbBrique1++] = translation;
-      }
-      if(brique2[x][z]){
-	glm::vec3 translation;
-	translation.y = 0.0f;
-	translation.x = -(float)x + offset;
-	translation.z = (float)z + offset;
-	translations2[nbBrique2++] = translation;
+	translations[nbBoxes++] = translation;
       }
     }
   }
-  int choiceMatrix = 1;
-  int nbBrique = nbBrique1;
 
   /**********************************************************/
 
@@ -270,64 +268,11 @@ int main(void)
 
     }
     */
-    /****Plan****/
-    glUseProgram(programIDPlan);
-
-    MVPPlan = ProjectionMatrix * ViewMatrix * ModelMatrixPlan;
-    glUniformMatrix4fv(MatrixIDPlan, 1, GL_FALSE, &MVPPlan[0][0]);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texturePlan);
-    glUniform1i(texturePlanID, 0);
-
-    //Update
-    if(glfwGetKeyOnce2(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-      if(choiceMatrix==1){
-	choiceMatrix=2;
-      }
-      else{
-	choiceMatrix=1;
-      }
-    }
-    if(choiceMatrix==1){
-      for(int i=0; i<nbBrique1; i++){
-	std::stringstream ss;
-	std::string index;
-	ss << i; 
-	index = ss.str(); 
-	GLuint translID = glGetUniformLocation(programIDPlan, ("transl[" + index + "]").c_str());
-	glUniform3f(translID, translations[i].x, translations[i].y, translations[i].z);
-      }
-      nbBrique = nbBrique1;
-    }
-    else{
-      for(int i=0; i<nbBrique2; i++){
-	std::stringstream ss;
-	std::string index;
-	ss << i; 
-	index = ss.str(); 
-	GLuint translID = glGetUniformLocation(programIDPlan, ("transl[" + index + "]").c_str());
-	glUniform3f(translID, translations2[i].x, translations2[i].y, translations2[i].z);
-      }
-      nbBrique = nbBrique2;
-    }
-
-    glBindVertexArray(vaoPlan);
-    glEnableVertexAttribArray(positionPlanIndex);
-    glEnableVertexAttribArray(uvPlanIndex);
-
-    glDrawArraysInstanced(GL_TRIANGLES, 0, vertexCountPlan, nbBrique);
-
-    glDisableVertexAttribArray(positionPlanIndex);
-    glDisableVertexAttribArray(uvPlanIndex);
-    glBindVertexArray(0);
-
 
     /****Robot****/
-    glUseProgram(0);
     glUseProgram(programIDRobot);
 
-    ModelMatrixRobot = moveRobot(window, ModelMatrixRobot, hudMoves);
+    ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
     glUniformMatrix4fv(MatrixIDRobot, 1, GL_FALSE, &MVPRobot[0][0]);
 
@@ -343,6 +288,38 @@ int main(void)
 
     glDisableVertexAttribArray(positionRobotIndex);
     glDisableVertexAttribArray(uvRobotIndex);
+    glBindVertexArray(0);
+
+
+    /****Plan****/
+    glUseProgram(0);
+    glUseProgram(programIDPlan);
+
+    MVPPlan = ProjectionMatrix * ViewMatrix * ModelMatrixPlan;
+    glUniformMatrix4fv(MatrixIDPlan, 1, GL_FALSE, &MVPPlan[0][0]);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texturePlan);
+    glUniform1i(texturePlanID, 0);
+
+    translations = updateMatrix(gameState, nbBoxes);
+    for(int i=0; i<nbBoxes; i++){
+      std::stringstream ss;
+      std::string index;
+      ss << i; 
+      index = ss.str(); 
+      GLuint translID = glGetUniformLocation(programIDPlan, ("transl[" + index + "]").c_str());
+      glUniform3f(translID, translations[i].x, translations[i].y, translations[i].z);
+    }
+
+    glBindVertexArray(vaoPlan);
+    glEnableVertexAttribArray(positionPlanIndex);
+    glEnableVertexAttribArray(uvPlanIndex);
+
+    glDrawArraysInstanced(GL_TRIANGLES, 0, vertexCountPlan, nbBrique);
+
+    glDisableVertexAttribArray(positionPlanIndex);
+    glDisableVertexAttribArray(uvPlanIndex);
 
     /*************/
     glfwSwapBuffers(window);
