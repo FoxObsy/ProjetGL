@@ -10,7 +10,6 @@ Matrix Matrix::setMap(string chMatrix){
     fileMatrix >> _column >> _row;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
-      cout << line.length() << endl;
       if(line == ""){
 	emptyLine = true;
       }else{
@@ -21,7 +20,6 @@ Matrix Matrix::setMap(string chMatrix){
 	  }
 	}else{
 	  for(int j = 0; j<_column;j++){
-	    cout << "colonne nb :" << j << endl;
 	    switch(line[j]){
 	    case 'b' :
 	      _matrix[i][j].setBox(true);
