@@ -10,7 +10,7 @@ Matrix Matrix::setMap(string chMatrix){
     fileMatrix >> _column >> _row;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
-      cout << line.length() - 1 << endl;
+      cout << line.length() << endl;
       if(line == ""){
 	emptyLine = true;
       }else{
@@ -20,7 +20,7 @@ Matrix Matrix::setMap(string chMatrix){
 	    _matrix[j] = new Tile[_column];
 	  }
 	}else{
-	  for(int j = 0; j<(line.length() - 1);j++){
+	  for(int j = 0; j<column;j++){
 	    cout << "colonne nb :" << j << endl;
 	    switch(line[j]){
 	    case 'b' :
