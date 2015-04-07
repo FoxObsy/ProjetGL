@@ -7,36 +7,24 @@ using namespace std;
 
 void GameState::event(int move){
   if(move == 1){
-    if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isEmpty()){
+    if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::DOWN)){
       ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       player.up();
       ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
-    }
-    else{
-      if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::UP)){
-	  if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
-	    nbr_target_free ++;
-	  }
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-	  player.up();
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-    ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()+1]).setEmpty(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
-	  player.incMoves();
-	  if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
-	    nbr_target_free --;
-	  }
-	}
+      if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
+         ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
+         ((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
       }
-    }
+
+	   if(((matrix.getMatrix())[player.getX()][player.getY()]).hasTarget()){
+	    nbr_target_free --;
+	    }
+	 }
   }
+
 
   //if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
   if(move == 2){
@@ -50,7 +38,7 @@ void GameState::event(int move){
     }
     else{
       if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::DOWN)){
+	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::UP)){
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
 	  player.down();
@@ -82,7 +70,7 @@ void GameState::event(int move){
     }
     else{
       if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::RIGHT)){
+	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::LEFT)){
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
 	  player.right();
@@ -114,7 +102,7 @@ void GameState::event(int move){
     }
     else{
       if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::LEFT))
+	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::RIGHT))
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
 	((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);	
 	player.left();
