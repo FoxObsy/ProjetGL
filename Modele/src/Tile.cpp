@@ -129,6 +129,7 @@ bool Tile::isReachable() {
 
 // side : coté ou se situe le personnage par rapport à la case
 bool Tile::isReachableFrom(Tile::Side side) {
+  cout << "Side = " << side <<endl;
   cout << "=> Case atteignable?" << endl;
   if (isBorder() ) { 
     // setUnreachable();
