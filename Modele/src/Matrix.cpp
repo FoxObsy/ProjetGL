@@ -12,6 +12,7 @@ Matrix Matrix::setMap(string chMatrix){
     cout << _column << endl;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
+      cout << line.length() << endl;
       if(line == ""){
 	emptyLine = true;
       }else{
