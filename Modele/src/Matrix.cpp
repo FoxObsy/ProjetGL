@@ -83,7 +83,10 @@ void Matrix::AffMatrix(){
       }
       if(_matrix[i][j].hasTarget() && _matrix[i][j].isEmpty()){
 	cout << 't';
-      }else if(_matrix[i][j].hasTarget() && _matrix[i][j].hasPlayer()){
+      }else{
+	cout << '-';
+      }
+      if(_matrix[i][j].hasTarget() && _matrix[i][j].hasPlayer()){
 	cout << 'P';
       }else{
 	cout << '-';
