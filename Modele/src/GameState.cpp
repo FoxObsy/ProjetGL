@@ -10,6 +10,7 @@ void GameState::event(int move){
     if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::DOWN)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
+      cout << "MOUVEMENT POSSIBLE" <<endl;
       player.up();
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
       player.incMoves();
@@ -210,8 +211,8 @@ GameState::GameState(string file)
 {
   matrix.setMap(file);
   int * positionPlayer = matrix.getPositionPlayer();
-  player.setX(positionPlayer[0]);
-  player.setY(positionPlayer[1]);
+  player.setX(positionPlayer[1]);
+  player.setY(positionPlayer[0]);
   nbr_target_free = 0;
   initNbrTargetFree();
   end = false;
