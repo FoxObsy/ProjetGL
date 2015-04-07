@@ -5,16 +5,20 @@
 #include "Player.hpp"
 
 class GameState{
-	Matrix matrix;
-	Player player;
-	int nbr_target_free;
-	bool end;
-};
 
-GameState(String file);
-void event(int move);
-bool getEnd();
-Matrix getMatrix();
-int initNbrTargetFree();
+private:	
+  Matrix matrix;
+  Player player;
+  int nbr_target_free;
+  bool end;
+
+public:
+  GameState(std::string file);
+  void event(int move);
+  bool getEnd();
+  Matrix getMatrix();
+  void initNbrTargetFree();
+
+};
 
 #endif

@@ -14,6 +14,8 @@
 
 #include "controls.h"
 
+#include "include/GameState.hpp"
+
 #define PI glm::pi<float>()
 
 char keyOnce[GLFW_KEY_LAST + 1];
@@ -60,19 +62,19 @@ glm::mat4 computeMatricesFromInputs(GLFWwindow* window){
 }
 
 
-int direction = 0; //0->haut 1->gauche 2->bas 3->droite
+int direction = 1; //1->haut 2->bas 3->droite 4->gauche 
 glm::vec3 rot, transl;
 glm::vec3 postion = glm::vec3(0.0f);
 
-glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot, int &moves){
+glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMatrixRobot, int &moves){
 
   if(glfwGetKeyOnce(window, GLFW_KEY_UP) == GLFW_PRESS){ //Haut;
     switch(direction){
-    case 0: //haut
+    case 1: //haut
       rot = glm::vec3(0.0f);
       transl = glm::vec3(-1.0f,0.0f,0.0f);
       break;
-    case 1: //gauche
+    case 4: //gauche
       rot = glm::vec3(0.0f,-PI/2,0.0f);
       transl = glm::vec3(0.0f,0.0f,-1.0f);
       break;
@@ -83,44 +85,48 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot, int &moves){
     case 3: //droite
       rot = glm::vec3(0.0f,PI/2,0.0f);
       transl = glm::vec3(0.0f,0.0f,1.0f);
-      break;
-    }
-    direction = 0;
-    moves++;
-    ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
-  }
-
-  if(glfwGetKeyOnce(window, GLFW_KEY_LEFT) == GLFW_PRESS){ //Gauche
-    switch(direction){
-    case 0: //haut
-      rot = glm::vec3(0.0f,PI/2,0.0f);
-      transl = glm::vec3(0.0f,0.0f,1.0f);
-      break;
-    case 1: //gauche
-      rot = glm::vec3(0.0f);
-      transl = glm::vec3(-1.0f,0.0f,0.0f);
-      break;
-    case 2: //bas
-      rot = glm::vec3(0.0f,-PI/2,0.0f);
-      transl = glm::vec3(0.0f,0.0f,-1.0f);
-      break;
-    case 3: //droite
-      rot = glm::vec3(0.0f,PI,0.0f);
-      transl = glm::vec3(1.0f,0.0f,0.0f);
       break;
     }
     direction = 1;
     moves++;
-    ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    gameState.event(direction);
+    //ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
+  }
+
+  if(glfwGetKeyOnce(window, GLFW_KEY_LEFT) == GLFW_PRESS){ //Gauche
+    switch(direction){
+    case 1: //haut
+      rot = glm::vec3(0.0f,PI/2,0.0f);
+      transl = glm::vec3(0.0f,0.0f,1.0f);
+      break;
+    case 4: //gauche
+      rot = glm::vec3(0.0f);
+      transl = glm::vec3(-1.0f,0.0f,0.0f);
+      break;
+    case 2: //bas
+      rot = glm::vec3(0.0f,-PI/2,0.0f);
+      transl = glm::vec3(0.0f,0.0f,-1.0f);
+      break;
+    case 3: //droite
+      rot = glm::vec3(0.0f,PI,0.0f);
+      transl = glm::vec3(1.0f,0.0f,0.0f);
+      break;
+    }
+    direction = 4;
+    moves++;
+    gameState.event(direction);
+    //ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
   }
 
   if(glfwGetKeyOnce(window, GLFW_KEY_DOWN) == GLFW_PRESS){ //Bas
     switch(direction){
-    case 0: //haut
+    case 1: //haut
       rot = glm::vec3(0.0f,PI,0.0f);
       transl = glm::vec3(1.0f,0.0f,0.0f);
       break;
-    case 1: //gauche
+    case 4: //gauche
       rot = glm::vec3(0.0f,PI/2,0.0f);
       transl = glm::vec3(0.0f,0.0f,1.0f);
       break;
@@ -135,16 +141,18 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot, int &moves){
     }
     direction = 2;
     moves++;
-    ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    gameState.event(direction);
+    //ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
   }
 
   if(glfwGetKeyOnce(window, GLFW_KEY_RIGHT) == GLFW_PRESS){ //Droite
     switch(direction){
-    case 0: //haut
+    case 1: //haut
       rot = glm::vec3(0.0f,-PI/2,0.0f);
       transl = glm::vec3(0.0f,0.0f,-1.0f);
       break;
-    case 1: //gauche
+    case 4: //gauche
       rot = glm::vec3(0.0f,PI,0.0f);
       transl = glm::vec3(1.0f,0.0f,0.0f);
       break;
@@ -159,9 +167,11 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot, int &moves){
     }
     direction = 3;
     moves++;
-    ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    gameState.event(direction);
+    //ModelMatrixRobot = glm::translate(ModelMatrixRobot, transl) * glm::toMat4(glm::quat(rot));
+    ModelMatrixRobot = ModelMatrixRobot * glm::toMat4(glm::quat(rot));
   }
-
+  /*
   if(glfwGetKeyOnce(window, GLFW_KEY_F) == GLFW_PRESS){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, glm::vec3(0.0f,1.0f,0.0f));
   }
@@ -169,6 +179,6 @@ glm::mat4 moveRobot(GLFWwindow* window, glm::mat4 ModelMatrixRobot, int &moves){
   if(glfwGetKeyOnce(window, GLFW_KEY_R) == GLFW_PRESS){
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, glm::vec3(0.0f,-1.0f,0.0f));
   }
-
+  */
   return ModelMatrixRobot;
 }

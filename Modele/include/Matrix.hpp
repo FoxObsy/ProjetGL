@@ -64,7 +64,7 @@ public:
     }
   }
 
-  //Matrix setMap(string chMatrix);
+  Matrix setMap(std::string chMatrix);
   int getRow() const;
   int getColumn() const;
   Tile **getMatrix();
