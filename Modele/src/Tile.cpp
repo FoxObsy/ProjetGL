@@ -8,10 +8,10 @@ using namespace std;
 // ------------------------------------------
 
 // UP
-void Tile::setTileUp(Tile & t) {
+void Tile::setTileUp(Tile & t){
   _tileUp = &t;
 }
-Tile & Tile::tileUp() {
+Tile & Tile::tileUp(){
   return *_tileUp;
 }
 
