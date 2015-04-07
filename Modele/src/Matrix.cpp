@@ -8,6 +8,8 @@ Matrix Matrix::setMap(string chMatrix){
   bool emptyLine;
   if(fileMatrix){
     fileMatrix >> _row >> _column;
+    cout << _row << endl;
+    cout << _column << endl;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
       if(line == ""){
