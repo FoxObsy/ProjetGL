@@ -61,7 +61,7 @@ int Matrix::getColumn() const{
 }
 
 int* Matrix::getPositionPlayer(){
-  int pos[2];
+  int *pos = new int[2];
   for(int i =0; i < _row; i++){
     for(int j = 0; j < _column; j++){
       if(_matrix[i][j].hasPlayer()){
