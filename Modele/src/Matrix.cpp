@@ -72,3 +72,26 @@ int* Matrix::getPositionPlayer(){
     }
   }
 }
+
+void Matrix::AffMatrix(){
+  for(int i = 0; i<_row; i++){
+    for(int j = 0; j < _column; j++){
+      if(_matrix[i][j].hasBox()){
+	cout << 'b';
+      }
+      if(_matrix[i][j].hasTarget()){
+	cout << 't';
+      }
+      if(_matrix[i][j].isBorder()){
+	cout << 'x';
+      }
+      if(_matrix[i][j].isEmpty()){
+	cout << '-';
+      }
+      if(_matrix[i][j].hasPlayer()){
+	cout << 'p';
+      }
+    }
+    cout << endl;
+  }
+}
