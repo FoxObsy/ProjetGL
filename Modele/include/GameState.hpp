@@ -20,7 +20,8 @@ public:
   Matrix getMatrix();
   void initNbrTargetFree();
 
-  ~GameState(){delete matrix}
+  ~GameState(){delete matrix;
+  				delete player;}
 };
 
 #endif
