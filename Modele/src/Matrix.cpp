@@ -20,7 +20,7 @@ Matrix Matrix::setMap(string chMatrix){
 	    _matrix[j] = new Tile[_column];
 	  }
 	}else{
-	  for(int j = 0; j<column;j++){
+	  for(int j = 0; j<_column;j++){
 	    cout << "colonne nb :" << j << endl;
 	    switch(line[j]){
 	    case 'b' :
