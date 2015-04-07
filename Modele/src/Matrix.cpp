@@ -81,12 +81,11 @@ void Matrix::AffMatrix(){
       }
       if(_matrix[i][j].hasTarget()){
 	cout << 't';
+      }else if(_matrix[i][j].isEmpty()){
+	cout << '-';
       }
       if(_matrix[i][j].isBorder()){
 	cout << 'x';
-      }
-      if(_matrix[i][j].isEmpty()){
-	cout << '-';
       }
       if(_matrix[i][j].hasPlayer()){
 	cout << 'p';
