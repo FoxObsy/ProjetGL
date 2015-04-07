@@ -8,7 +8,7 @@ using namespace std;
 void GameState::event(int move){
   if(move == 1){
     cout << "MOUVEMENT POSSIBLE ?? UP" <<endl;
-    if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::DOWN)){
+    if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::DOWN)){
       cout << "MOUVEMENT POSSIBLE : UP" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
@@ -21,8 +21,8 @@ void GameState::event(int move){
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
+	((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
+	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
     cout << "LIBERATION DE CIBLE" <<endl;
 	  nbr_target_free --;
 	}
@@ -32,36 +32,12 @@ void GameState::event(int move){
 
  if(move == 2){
     cout << "MOUVEMENT POSSIBLE ?? DOWN" <<endl;
-    if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::UP)){
+    if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::UP)){
       cout << "MOUVEMENT POSSIBLE : DOWN" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
       player.down();
-       cout << "nouveau player x:" << player.getX() <<endl;
-      cout << "nouveau player y:" << player.getY() <<endl;
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-      player.incMoves();
-      if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
-        cout << "CAISSE DETECTE" <<endl;
-	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
-    cout << "LIBERATION DE CIBLE" <<endl;
-	  nbr_target_free --;
-	}
-      }
-
-    }
-  }
- if(move == 3){
-  cout << "MOUVEMENT POSSIBLE ?? RIGHT" <<endl;
-    if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::LEFT)){
-      cout << "MOUVEMENT POSSIBLE : RIGHT" <<endl;
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-      cout << "ancien player x:" << player.getX() <<endl;
-      cout << "ancien player y:" << player.getY() <<endl;
-      player.right();
        cout << "nouveau player x:" << player.getX() <<endl;
       cout << "nouveau player y:" << player.getY() <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
@@ -78,10 +54,34 @@ void GameState::event(int move){
 
     }
   }
+ if(move == 3){
+  cout << "MOUVEMENT POSSIBLE ?? RIGHT" <<endl;
+    if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::LEFT)){
+      cout << "MOUVEMENT POSSIBLE : RIGHT" <<endl;
+      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
+      cout << "ancien player x:" << player.getX() <<endl;
+      cout << "ancien player y:" << player.getY() <<endl;
+      player.right();
+       cout << "nouveau player x:" << player.getX() <<endl;
+      cout << "nouveau player y:" << player.getY() <<endl;
+      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
+      player.incMoves();
+      if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
+        cout << "CAISSE DETECTE" <<endl;
+	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
+	((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
+	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
+	  nbr_target_free --;
+	}
+      }
+
+    }
+  }
 
  if(move == 4){
   cout << "MOUVEMENT POSSIBLE ?? LEFT" <<endl;
-    if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::RIGHT)){
+    if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::RIGHT)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
      cout << "ancien player x:" << player.getX() <<endl;
@@ -94,8 +94,8 @@ void GameState::event(int move){
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
+	((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
+	if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
     cout << "LIBERATION DE CIBLE" <<endl;
 	  nbr_target_free --;
 	}
