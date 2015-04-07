@@ -8,35 +8,35 @@ using namespace std;
 // ------------------------------------------
 
 // UP
-void Tile::setTileUp(Tile & t){
-  _tileUp = &t;
+void Tile::setTileUp(Tile* t){
+  _tileUp = t;
 }
-Tile & Tile::tileUp(){
-  return *_tileUp;
+Tile* Tile::tileUp(){
+  return _tileUp;
 }
 
 // DOWN
-void Tile::setTileDown(Tile & t) {
-  _tileDown = &t;
+void Tile::setTileDown(Tile* t) {
+  _tileDown = t;
 }
-Tile & Tile::tileDown() {
-  return *_tileDown;
+Tile* Tile::tileDown() {
+  return _tileDown;
 }
 
 // LEFT
-void Tile::setTileLeft(Tile & t) {
-  _tileLeft = &t;
+void Tile::setTileLeft(Tile* t) {
+  _tileLeft = t;
 }
-Tile & Tile::tileLeft() {
-  return *_tileLeft;
+Tile* Tile::tileLeft() {
+  return _tileLeft;
 }
 
 // RIGHT
-void Tile::setTileRight(Tile & t) {
-  _tileRight = &t;
+void Tile::setTileRight(Tile* t) {
+  _tileRight = t;
 }
-Tile & Tile::tileRight() {
-  return *_tileRight;
+Tile* Tile::tileRight() {
+  return _tileRight;
 }
 
 /* --------------------------------------- */
@@ -146,7 +146,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
       cout << "side?" << endl;
       case LEFT :
       cout << "possible par la gauche?" << endl;
-	if (tileRight().hasBox() || tileRight().isBorder()) {
+	if (tileRight()->hasBox() || tileRight()->isBorder()) {
     cout << "       Impossible par la gauche ! " << endl;
 	  // setUnreachable();
 	  return false;
@@ -155,7 +155,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
 	
       case RIGHT :
       cout << "possible par la droite?" << endl;
-	if (tileLeft().hasBox() || tileLeft().isBorder()) {
+	if (tileLeft()->hasBox() || tileLeft()->isBorder()) {
 
     cout << "       Impossible par la droite !" << endl;
 	  // setUnreachable();
@@ -165,7 +165,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
 
       case UP :
       cout << "possible par le haut?" << endl;
-	if (tileDown().hasBox() || tileDown().isBorder()) {
+	if (tileDown()->hasBox() || tileDown()->isBorder()) {
     cout << "       Impossible par le haut !" << endl;
     // setUnreachable();
 	  return false;
@@ -174,7 +174,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
 	
       case DOWN :
       cout << "possible par le bas?" << endl;
-	if (tileUp().hasBox() || tileUp().isBorder()) {
+	if (tileUp()->hasBox() || tileUp()->isBorder()) {
     cout << "       Impossible par le bas !" << endl;
 	  // setUnreachable();
 	  return false;
