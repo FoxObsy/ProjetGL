@@ -25,13 +25,14 @@
 #include "utils/objloader.h"
 
 #include "include/GameState.hpp"
+#include "include/Tile.hpp"
 
 #define WIDTH 1024
 #define HEIGHT 768
 #define PI glm::pi<float>()
 
 GLFWwindow* window;
-GameState gameState;
+std::string lvl = "1";
 
 char* file_contents(std::string name, GLint* l){
   std::string code;
@@ -72,10 +73,10 @@ GLuint shader_loader(std::string vertex, std::string fragment){
   return programid;
 }
 
-glm::vec3* updateMatrix(GameState gameState, int nb){
+void updateMatrix(glm::vec3* translations, GameState gameState, int nb){
   Matrix map = gameState.getMatrix();
   int nbBoxes = 0;
-  glm::vec3 translations[nb];
+  float offset = 0.1f;
   for(int x=0; x<map.getRow(); x++){
     for(int z=0; z<map.getColumn(); z++){
       if(map.getMatrix()[x][z].hasBox()){
@@ -87,7 +88,6 @@ glm::vec3* updateMatrix(GameState gameState, int nb){
       }
     }
   }
-  return translations;
 }
 
 /******************************************************************************/
@@ -100,7 +100,7 @@ int main(void)
 
   // Create OpenGL 4.4 Core Profile and Forward Compatible Context
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -140,50 +140,49 @@ int main(void)
   TwAddVarRW(GUI, "Temps", TW_TYPE_DOUBLE, &hudTime, NULL);
   */
   int hudMoves = 0;
-  /**************** Plan ********************/
-  GLuint programIDPlan = shader_loader("shaderPlan.v.glsl","shaderPlan.f.glsl");
-  
-  GLuint vaoPlan;
-  glGenVertexArrays(1, &vaoPlan);
-  glBindVertexArray(vaoPlan);
-  //---------CPU side version
-  float positionsPlan[]={0,0,0, 0,0,1, 1,0,0,   1,0,0, 0,0,1, 1,0,1};
-  GLuint vertexCountPlan = 6;
-  
-  GLuint texturePlan = loadTGATexture("brick_colormap.tga");
-  GLuint texturePlanID = glGetUniformLocation(programIDPlan, "colorMap");
 
-  std::vector<glm::vec2> uvsPlan={
-        glm::vec2(0,0), glm::vec2(0,1),  glm::vec2(1,0),
-        glm::vec2(1,0),  glm::vec2(0,1), glm::vec2(1,1)
-  };
+
+  /**************** Bloc ********************/
+  GLuint programIDBloc = shader_loader("../resources/lvl"+lvl+"/shaderbloc"+lvl+".v.glsl","../resources/lvl"+lvl+"/shaderbloc"+lvl+".f.glsl");
+  
+  GLuint vaoBloc;
+  glGenVertexArrays(1, &vaoBloc);
+  glBindVertexArray(vaoBloc);
+  //---------CPU side version
+  std::vector<glm::vec3> positionsBloc;
+  std::vector<glm::vec2> uvsBloc;
+  std::vector<glm::vec3> normalsBloc;
+  loadOBJ(("../resources/lvl"+lvl+"/bloc"+lvl+".obj").c_str(),positionsBloc,uvsBloc,normalsBloc);
+
+  GLuint textureBloc = loadTGATexture("../resources/lvl"+lvl+"/bloc"+lvl+"_diffus.tga");
+  GLuint textureBlocID = glGetUniformLocation(programIDBloc, "colorMap");
 
   //---------GPU side version
-  GLuint positionPlanBuffer;
-  glGenBuffers(1, &positionPlanBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, positionPlanBuffer);
-  glBufferData(GL_ARRAY_BUFFER, vertexCountPlan* 3 * sizeof(float), positionsPlan, GL_STATIC_DRAW);
-  GLint positionPlanIndex = glGetAttribLocation(programIDPlan, "position");
-  glEnableVertexAttribArray(positionPlanIndex);
-  glVertexAttribPointer(positionPlanIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  glDisableVertexAttribArray(positionPlanIndex);
+  GLuint positionBlocBuffer;
+  glGenBuffers(1, &positionBlocBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, positionBlocBuffer);
+  glBufferData(GL_ARRAY_BUFFER, positionsBloc.size()*sizeof(glm::vec3), &positionsBloc[0], GL_STATIC_DRAW);
+  GLint positionBlocIndex = glGetAttribLocation(programIDBloc, "position");
+  glEnableVertexAttribArray(positionBlocIndex);
+  glVertexAttribPointer(positionBlocIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(positionBlocIndex);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  GLuint uvPlanBuffer;
-  glGenBuffers(1, &uvPlanBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, uvPlanBuffer);
-  glBufferData(GL_ARRAY_BUFFER, uvsPlan.size()*sizeof(glm::vec2), &uvsPlan[0], GL_STATIC_DRAW);
-  GLint uvPlanIndex = glGetAttribLocation(programIDPlan, "uv");
-  glEnableVertexAttribArray(uvPlanIndex);
-  glVertexAttribPointer(uvPlanIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
-  glDisableVertexAttribArray(uvPlanIndex);
+  GLuint uvBlocBuffer;
+  glGenBuffers(1, &uvBlocBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, uvBlocBuffer);
+  glBufferData(GL_ARRAY_BUFFER, uvsBloc.size()*sizeof(glm::vec2), &uvsBloc[0], GL_STATIC_DRAW);
+  GLint uvBlocIndex = glGetAttribLocation(programIDBloc, "uv");
+  glEnableVertexAttribArray(uvBlocIndex);
+  glVertexAttribPointer(uvBlocIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(uvBlocIndex);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
 
 
   /**************** Robot ********************/
-  GLuint programIDRobot = shader_loader("shaderRobot.v.glsl","shaderRobot.f.glsl");
+  GLuint programIDRobot = shader_loader("../resources/soko/shaderSoko.v.glsl","../resources/soko/shaderSoko.f.glsl");
 
   GLuint vaoRobot;
   glGenVertexArrays(1, &vaoRobot);
@@ -192,9 +191,9 @@ int main(void)
   std::vector<glm::vec3> positionsRobot;
   std::vector<glm::vec2> uvsRobot;
   std::vector<glm::vec3> normalsRobot;
-  loadOBJ("soko_fromBlender.obj",positionsRobot,uvsRobot,normalsRobot);
+  loadOBJ("../resources/soko/soko.obj",positionsRobot,uvsRobot,normalsRobot);
 
-  GLuint textureRobot = loadTGATexture("diffus_robot.tga");
+  GLuint textureRobot = loadTGATexture("../resources/soko/diffus_robot.tga");
   GLuint textureRobotID = glGetUniformLocation(programIDRobot, "colorMap");
 
   //---------GPU side version
@@ -219,14 +218,54 @@ int main(void)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
+
+
+  /**************** Level ********************/
+  GLuint programIDLvl = shader_loader("../resources/lvl"+lvl+"/shaderlvl"+lvl+".v.glsl","../resources/lvl"+lvl+"/shaderlvl"+lvl+".f.glsl");
+
+  GLuint vaoLvl;
+  glGenVertexArrays(1, &vaoLvl);
+  glBindVertexArray(vaoLvl);
+  //---------CPU side version
+  std::vector<glm::vec3> positionsLvl;
+  std::vector<glm::vec2> uvsLvl;
+  std::vector<glm::vec3> normalsLvl;
+  loadOBJ(("../resources/lvl"+lvl+"/lvl"+lvl+".obj").c_str(),positionsLvl,uvsLvl,normalsLvl);
+
+  GLuint textureLvl = loadTGATexture("../resources/lvl"+lvl+"/lvl"+lvl+"_diffus.tga");
+  GLuint textureLvlID = glGetUniformLocation(programIDLvl, "colorMap");
+
+  //---------GPU side version
+  GLuint positionLvlBuffer;
+  glGenBuffers(1, &positionLvlBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, positionLvlBuffer);
+  glBufferData(GL_ARRAY_BUFFER, positionsLvl.size()*sizeof(glm::vec3), &positionsLvl[0], GL_STATIC_DRAW);
+  GLint positionLvlIndex = glGetAttribLocation(programIDLvl, "position");
+  glEnableVertexAttribArray(positionLvlIndex);
+  glVertexAttribPointer(positionLvlIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(positionLvlIndex);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  GLuint uvLvlBuffer;
+  glGenBuffers(1, &uvLvlBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, uvLvlBuffer);
+  glBufferData(GL_ARRAY_BUFFER, uvsLvl.size()*sizeof(glm::vec2), &uvsLvl[0], GL_STATIC_DRAW);
+  GLint uvLvlIndex = glGetAttribLocation(programIDLvl, "uv");
+  glEnableVertexAttribArray(uvLvlIndex);
+  glVertexAttribPointer(uvLvlIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(uvLvlIndex);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glBindVertexArray(0);
   
   /***************** Test Matrice *****************/
   
-  gameState = GameState("lvl1.txt");
+  GameState gameState("../resources/lvl"+lvl+"/lvl"+lvl+".txt");
   Matrix map = gameState.getMatrix();
-  unsigned int mapRow = map.getRow();
-  unsigned int mapColumn = map.getColumn();
-  glm::vec3 translations[mapRow * mapColumn];
+  int mapRow = map.getRow();
+  int mapColumn = map.getColumn();
+  std::cout << mapRow << " - " << mapColumn << std::endl;
+  glm::vec3 translations[/*mapRow * mapColumn*/70];
   int nbBoxes = 0;
   float offset = 0.1f;
   for(int x=0; x<mapRow; x++){
@@ -243,14 +282,15 @@ int main(void)
 
   /**********************************************************/
 
-  GLuint MatrixIDPlan = glGetUniformLocation(programIDPlan, "MVP");
+  GLuint MatrixIDBloc = glGetUniformLocation(programIDBloc, "MVP");
   GLuint MatrixIDRobot = glGetUniformLocation(programIDRobot, "MVP");
   
   glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
   glm::mat4 ViewMatrix;
-  glm::mat4 ModelMatrixPlan = glm::translate(glm::mat4(1.0),glm::vec3(0.0f,-3.0f,0.0f));
-  glm::mat4 ModelMatrixRobot = glm::mat4(1.0f);
-  glm::mat4 MVPPlan;
+  glm::mat4 ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(0.0f,-0.8f,0.0f));
+  glm::mat4 ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(0.0f,-0.7f,0.5f));
+  //offset robot -> z+0.5f
+  glm::mat4 MVPBloc;
   glm::mat4 MVPRobot;
 
 
@@ -291,35 +331,56 @@ int main(void)
     glBindVertexArray(0);
 
 
-    /****Plan****/
-    glUseProgram(0);
-    glUseProgram(programIDPlan);
+    /****Level****/
+    glUseProgram(programIDLvl);
 
-    MVPPlan = ProjectionMatrix * ViewMatrix * ModelMatrixPlan;
-    glUniformMatrix4fv(MatrixIDPlan, 1, GL_FALSE, &MVPPlan[0][0]);
+    MVPBloc = ProjectionMatrix * ViewMatrix * ModelMatrixBloc;
+    glUniformMatrix4fv(MatrixIDBloc, 1, GL_FALSE, &MVPBloc[0][0]);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texturePlan);
-    glUniform1i(texturePlanID, 0);
+    glBindTexture(GL_TEXTURE_2D, textureLvl);
+    glUniform1i(textureLvlID, 0);
 
-    translations = updateMatrix(gameState, nbBoxes);
+    glBindVertexArray(vaoLvl);
+    glEnableVertexAttribArray(positionLvlIndex);
+    glEnableVertexAttribArray(uvLvlIndex);
+
+    glDrawArrays(GL_TRIANGLES, 0, positionsLvl.size());
+
+    glDisableVertexAttribArray(positionLvlIndex);
+    glDisableVertexAttribArray(uvLvlIndex);
+    glBindVertexArray(0);
+
+
+    /****Bloc****/
+    glUseProgram(0);
+    glUseProgram(programIDBloc);
+
+    MVPBloc = ProjectionMatrix * ViewMatrix * ModelMatrixBloc;
+    glUniformMatrix4fv(MatrixIDBloc, 1, GL_FALSE, &MVPBloc[0][0]);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureBloc);
+    glUniform1i(textureBlocID, 0);
+
+    //updateMatrix(translations, gameState, nbBoxes);
     for(int i=0; i<nbBoxes; i++){
       std::stringstream ss;
       std::string index;
       ss << i; 
       index = ss.str(); 
-      GLuint translID = glGetUniformLocation(programIDPlan, ("transl[" + index + "]").c_str());
+      GLuint translID = glGetUniformLocation(programIDBloc, ("transl[" + index + "]").c_str());
       glUniform3f(translID, translations[i].x, translations[i].y, translations[i].z);
     }
 
-    glBindVertexArray(vaoPlan);
-    glEnableVertexAttribArray(positionPlanIndex);
-    glEnableVertexAttribArray(uvPlanIndex);
+    glBindVertexArray(vaoBloc);
+    glEnableVertexAttribArray(positionBlocIndex);
+    glEnableVertexAttribArray(uvBlocIndex);
 
-    glDrawArraysInstanced(GL_TRIANGLES, 0, vertexCountPlan, nbBrique);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, positionsBloc.size(), nbBoxes);
 
-    glDisableVertexAttribArray(positionPlanIndex);
-    glDisableVertexAttribArray(uvPlanIndex);
+    glDisableVertexAttribArray(positionBlocIndex);
+    glDisableVertexAttribArray(uvBlocIndex);
 
     /*************/
     glfwSwapBuffers(window);
@@ -332,14 +393,18 @@ int main(void)
 
   /*********************** Nettoyage **************************/
 
-  glDeleteBuffers(1, &positionPlanBuffer);
+  glDeleteBuffers(1, &positionBlocBuffer);
   glDeleteBuffers(1, &positionRobotBuffer);
-  glDeleteBuffers(1, &uvPlanBuffer);
+  glDeleteBuffers(1, &positionLvlBuffer);
+  glDeleteBuffers(1, &uvBlocBuffer);
   glDeleteBuffers(1, &uvRobotBuffer);
+  glDeleteBuffers(1, &uvLvlBuffer);
   glDeleteVertexArrays(1, &vaoRobot);
-  glDeleteVertexArrays(1, &vaoPlan);
-  glDeleteProgram(programIDPlan);
+  glDeleteVertexArrays(1, &vaoBloc);
+  glDeleteVertexArrays(1, &vaoLvl);
+  glDeleteProgram(programIDBloc);
   glDeleteProgram(programIDRobot);
+  glDeleteProgram(programIDLvl);
 
   glfwTerminate();
 
