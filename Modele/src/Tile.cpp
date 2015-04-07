@@ -129,6 +129,7 @@ bool Tile::isReachable() {
 
 // side : coté ou se situe le personnage par rapport à la case
 bool Tile::isReachableFrom(Tile::Side side) {
+  cout << "Side = " << side <<endl;
   cout << "=> Case atteignable?" << endl;
   if (isBorder() ) { 
     // setUnreachable();
@@ -140,10 +141,11 @@ bool Tile::isReachableFrom(Tile::Side side) {
 
     if (hasBox()) {
       
-    cout << "    Attention, caisse ! possible?" << endl;
+    cout << "    Attention, caisse !" << endl;
       switch (side) {
-      
+      cout << "side?" << endl;
       case LEFT :
+      cout << "possible par la gauche?" << endl;
 	if (tileRight().hasBox() || tileRight().isBorder()) {
     cout << "       Impossible par la gauche ! " << endl;
 	  // setUnreachable();
@@ -152,6 +154,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
 	break;
 	
       case RIGHT :
+      cout << "possible par la droite?" << endl;
 	if (tileLeft().hasBox() || tileLeft().isBorder()) {
 
     cout << "       Impossible par la droite !" << endl;
@@ -161,6 +164,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
 	break;
 
       case UP :
+      cout << "possible par le haut?" << endl;
 	if (tileDown().hasBox() || tileDown().isBorder()) {
     cout << "       Impossible par le haut !" << endl;
     // setUnreachable();
@@ -169,6 +173,7 @@ bool Tile::isReachableFrom(Tile::Side side) {
 	break;
 	
       case DOWN :
+      cout << "possible par le bas?" << endl;
 	if (tileUp().hasBox() || tileUp().isBorder()) {
     cout << "       Impossible par le bas !" << endl;
 	  // setUnreachable();

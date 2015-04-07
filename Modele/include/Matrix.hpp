@@ -64,6 +64,7 @@ public:
     }
   }
 
+  void attribSideTiles(); // Premet d'attribuer tileUp/Down/Left/Right une fois la lecture du .txt terminée. (appelée dans le constructeur)
   Matrix setMap(std::string chMatrix);
   int getRow() const;
   int getColumn() const;

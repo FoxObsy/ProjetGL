@@ -21,10 +21,10 @@ public:
 
   enum Side
     {
-      UP,
-      DOWN,
-      LEFT,
-      RIGHT
+      UP = 1,
+      DOWN = 2,
+      LEFT = 3,
+      RIGHT = 4
     };
 
   // Pour le constructeur, 
