@@ -12,6 +12,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include <irrKlang.h>
 #include "controls.h"
 
 #include "include/GameState.hpp"
@@ -24,6 +25,7 @@ char keyOnce[GLFW_KEY_LAST + 1];
    (keyOnce[KEY] ? false : (keyOnce[KEY] = true)) :	\
    (keyOnce[KEY] = false))
 
+using namespace irrklang;
 float radius = 10.0f;
 float speed = 0.05f;
 float horizontalAngle = -PI/2;
@@ -66,8 +68,8 @@ int direction = 1; //1->haut 2->bas 3->droite 4->gauche
 glm::vec3 rot, transl;
 glm::vec3 postion = glm::vec3(0.0f);
 
-glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMatrixRobot, int &moves){
-
+glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMatrixRobot, int &moves,ISoundEngine* engine, ISoundSource* caisse, ISoundSource* pas){
+  int sound;
   int* oldPosition = gameState.getMatrix().getPositionPlayer();
   if(glfwGetKeyOnce(window, GLFW_KEY_DOWN) == GLFW_PRESS){
     switch(direction){
@@ -90,7 +92,8 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 1;
     moves++;
-    gameState.event(1);
+    sound =gameState.event(1);
+
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -122,9 +125,10 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
       transl = glm::vec3(1.0f,0.0f,0.0f);
       break;
     }
+
     direction = 4;
     moves++;
-    gameState.event(4);
+    sound = gameState.event(4);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -158,7 +162,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 2;
     moves++;
-    gameState.event(2);
+    sound =gameState.event(2);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -192,7 +196,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 3;
     moves++;
-    gameState.event(3);
+    sound =gameState.event(3);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -213,5 +217,12 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, glm::vec3(0.0f,-1.0f,0.0f));
     }
   */
+  if(sound == 1){
+     engine->play2D(pas,false);
+  }
+
+  if(sound == 2){
+     engine->play2D(caisse,false);
+  }
   return ModelMatrixRobot;
 }

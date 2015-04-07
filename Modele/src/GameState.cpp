@@ -5,11 +5,13 @@
 #include "../include/GameState.hpp"
 using namespace std;
 
-void GameState::event(int move){
+int GameState::event(int move){
+  int sound = 0;
   if(move == 1){
     cout << "MOUVEMENT POSSIBLE ?? UP" <<endl;
     if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::DOWN)){
       cout << "MOUVEMENT POSSIBLE : UP" <<endl;
+      sound =1;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -20,6 +22,7 @@ void GameState::event(int move){
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
+        sound=2;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
@@ -34,6 +37,7 @@ void GameState::event(int move){
     cout << "MOUVEMENT POSSIBLE ?? DOWN" <<endl;
     if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::UP)){
       cout << "MOUVEMENT POSSIBLE : DOWN" <<endl;
+      sound =1;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -44,6 +48,7 @@ void GameState::event(int move){
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
+        sound=2;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
@@ -58,6 +63,7 @@ void GameState::event(int move){
   cout << "MOUVEMENT POSSIBLE ?? RIGHT" <<endl;
     if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::LEFT)){
       cout << "MOUVEMENT POSSIBLE : RIGHT" <<endl;
+      sound =1;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -68,6 +74,7 @@ void GameState::event(int move){
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
+        sound=2;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
@@ -83,6 +90,7 @@ void GameState::event(int move){
   cout << "MOUVEMENT POSSIBLE ?? LEFT" <<endl;
     if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::RIGHT)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
+      sound =1;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
      cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -93,6 +101,7 @@ void GameState::event(int move){
       player.incMoves();
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
+        sound=2;
 	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
 	if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
@@ -104,106 +113,11 @@ void GameState::event(int move){
     }
   }
 
-
-
-  /*
-  //if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-  if(move == 2){
-    if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isEmpty()) {
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-      player.down();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-      player.incMoves();
-    }
-    else{
-      if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::UP)){
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-	  player.down();
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()-1]).setEmpty(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
-	  player.incMoves();
-	  if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
-	    nbr_target_free --;
-	  }
-	}
-      }
-				
-    }
-  }
-
-  //if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-  if(move == 3){
-    if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isEmpty()){
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-      player.right();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-
-      player.incMoves();
-    }
-    else{
-      if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::LEFT)){
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
-	  player.right();
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	  ((matrix.getMatrix())[player.getX()-1][player.getY()]).setEmpty(false);
-	  ((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
-	  player.incMoves();
-	  if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
-	    nbr_target_free --;
-	  }
-	}
-      }
-    }
-				
-  }
-
-
-  //if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-  if(move == 4){	
-    if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isEmpty()){
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);	
-      player.left();
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-      ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-      player.incMoves();
-    }
-    else{
-      if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasBox()){
-	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::RIGHT))
-	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(true);
-	((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);	
-	player.left();
-	((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
-	((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
-	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()+1][player.getY()]).setEmpty(false);
-	((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
-	player.incMoves();
-	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
-	  nbr_target_free --;
-	}
-      }
-				
-    }
-  }
-  */
   if (nbr_target_free == 0){
     end = true;
   }
+
+  return sound;
 }
 
 bool GameState::getEnd(){

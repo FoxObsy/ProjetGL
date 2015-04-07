@@ -15,7 +15,7 @@ private:
 
 public:
   GameState(std::string file);
-  void event(int move);
+  int event(int move);
   bool getEnd();
   Matrix getMatrix();
   void initNbrTargetFree();

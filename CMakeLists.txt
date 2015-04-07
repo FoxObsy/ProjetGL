@@ -3,18 +3,21 @@ cmake_minimum_required(VERSION 2.6)
 project(CGILabs)
 
 ###  Settings  ###{{{
-set(CMAKE_CXX_FLAGS "-std=c++0x -DGL_GLEXT_PROTOTYPES -I/opt/X11/include") # Don't forget to define GL_GLEXT_PROTOTYPES to ensure that the glCreateShader and other prototypes are declared. Note we could do it in the main file via "#define GL_GLEXT_PROTOTYPES" before "#include <GL/glext.h>"
+set(CMAKE_CXX_FLAGS "-std=c++0x -DGL_GLEXT_PROTOTYPES -I/opt/X11/include -pthread") # Don't forget to define GL_GLEXT_PROTOTYPES to ensure that the glCreateShader and other prototypes are declared. Note we could do it in the main file via "#define GL_GLEXT_PROTOTYPES" before "#include <GL/glext.h>"
 ## setting build type to debug
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_BUILD_TYPE DEBUG)
 LINK_DIRECTORIES("~/local_install/lib")
 LINK_DIRECTORIES("/usr/local/lib")
+LINK_DIRECTORIES("/usr/lib")
+LINK_DIRECTORIES ("${CMAKE_CURRENT_SOURCE_DIR}/include/irrKlang-64bit-1.5.0/bin/linux-gcc-64")
 #LINK_DIRECTORIES("./include/AntTweakBar-1.16/lib")
 INCLUDE_DIRECTORIES("/usr/local/include")
 INCLUDE_DIRECTORIES("~/local_install/include")
 INCLUDE_DIRECTORIES("./3rd-parties/")
 INCLUDE_DIRECTORIES("./Modele")
 INCLUDE_DIRECTORIES("./include/AntTweakBar-1.16/include/")
+INCLUDE_DIRECTORIES("./include/irrKlang-64bit-1.5.0/include/")
 ###  Settings  ###}}}
 
 ###  OpenGL  ###{{{
@@ -50,9 +53,11 @@ link_directories(${ASSIMP_LIBRARY_DIRS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(UTILS_SRC include/lightGlAPI.hpp utils/utils.cpp utils/shaders.cpp utils/vao.cpp utils/textures.cpp utils/controls.cpp utils/objloader.cpp utils/tangentspace.cpp utils/vboindexer.cpp
-Modele/src/GameState.cpp Modele/src/Matrix.cpp Modele/src/Player.cpp Modele/src/Tile.cpp)
+Modele/src/GameState.cpp Modele/src/Matrix.cpp Modele/src/Player.cpp Modele/src/Tile.cpp ../include/irrKlang-64bit-1.5.0/bin/linux-gcc-64/libIrrKlang.so)
 #set(ANTTWEAKBAR_LIB ANTTWEAKBAR_116_OGLCORE_GLFW)
+set(IRRKLANG_LIB "libIrrKlang.so")
 add_library(utils ${UTILS_SRC})
+
 ###  internal util library  ###}}}
 
 ###  Sub projects  ###{{{
