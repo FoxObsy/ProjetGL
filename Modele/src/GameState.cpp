@@ -26,6 +26,7 @@ void GameState::event(int move){
 	  player.up();
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
+    ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()+1]).setEmpty(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
 	  player.incMoves();
@@ -55,6 +56,7 @@ void GameState::event(int move){
 	  player.down();
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
+    ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()-1]).setEmpty(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
 	  player.incMoves();
@@ -75,6 +77,7 @@ void GameState::event(int move){
       player.right();
       ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
+
       player.incMoves();
     }
     else{
@@ -85,6 +88,7 @@ void GameState::event(int move){
 	  player.right();
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
 	  ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
+    ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	  ((matrix.getMatrix())[player.getX()+1][player.getY()]).setEmpty(false);
 	  ((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
 	  player.incMoves();
@@ -116,10 +120,11 @@ void GameState::event(int move){
 	player.left();
 	((matrix.getMatrix())[player.getX()][player.getY()]).setEmpty(false);
 	((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(true);
+  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
 	((matrix.getMatrix())[player.getX()-1][player.getY()]).setEmpty(false);
 	((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
 	player.incMoves();
-	if(((matrix.getMatrix())[player.getX()-1][player.getY()])).hasTarget()){
+	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
 	  nbr_target_free --;
 	}
       }
