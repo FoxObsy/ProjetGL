@@ -32,7 +32,7 @@
 #define PI glm::pi<float>()
 
 GLFWwindow* window;
-std::string lvl = "1";
+//std::string lvl = "3";
 
 char* file_contents(std::string name, GLint* l){
   std::string code;
@@ -102,6 +102,18 @@ void updateMatrix(glm::vec3* translations, int* targetBoxes, GameState gameState
 int main(void)
 {
   /*********************** Initialisation **************************/
+  
+  std::string lvl;
+  int lvlID;
+  std::cout << "Choix du niveau (1,2,3) : ";
+  scanf("%d",&lvlID);
+  if(lvlID < 1 || lvlID > 3){
+    lvl = "1";
+    std::cout << "Niveau 1 choisi par défaut !" << std::endl;
+  }
+  else{
+    lvl = std::to_string(lvlID);
+  }
 
   if (!glfwInit()) return -1; //shutDown(1);
 
@@ -133,16 +145,6 @@ int main(void)
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
-  
-  if(lvl=="1"){
-    glClearColor(0.0, 0.5, 0.5, 0.0);
-  }
-  else if(lvl=="2"){
-    glClearColor(0.5, 0.0, 0.5, 0.0);
-  }
-  else{
-    glClearColor(0.5, 0.5, 0.0, 0.0);
-  }
   /*
   TwInit(TW_OPENGL_CORE, NULL);
   TwWindowSize(WIDTH, HEIGHT);
@@ -171,13 +173,14 @@ int main(void)
 
   GLuint textureBloc = loadTGATexture("../resources/lvl"+lvl+"/bloc"+lvl+"_diffus.tga");
   GLuint textureBlocID = glGetUniformLocation(programIDBloc, "colorMap");
+  GLuint lightcolorBlocID = glGetUniformLocation(programIDBloc, "lightcolor");
 
   //---------GPU side version
   GLuint positionBlocBuffer;
   glGenBuffers(1, &positionBlocBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, positionBlocBuffer);
   glBufferData(GL_ARRAY_BUFFER, positionsBloc.size()*sizeof(glm::vec3), &positionsBloc[0], GL_STATIC_DRAW);
-  GLint positionBlocIndex = glGetAttribLocation(programIDBloc, "position");
+  GLint positionBlocIndex = glGetAttribLocation(programIDBloc, "vert_position");
   glEnableVertexAttribArray(positionBlocIndex);
   glVertexAttribPointer(positionBlocIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glDisableVertexAttribArray(positionBlocIndex);
@@ -187,10 +190,20 @@ int main(void)
   glGenBuffers(1, &uvBlocBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, uvBlocBuffer);
   glBufferData(GL_ARRAY_BUFFER, uvsBloc.size()*sizeof(glm::vec2), &uvsBloc[0], GL_STATIC_DRAW);
-  GLint uvBlocIndex = glGetAttribLocation(programIDBloc, "uv");
+  GLint uvBlocIndex = glGetAttribLocation(programIDBloc, "vert_uv");
   glEnableVertexAttribArray(uvBlocIndex);
   glVertexAttribPointer(uvBlocIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
   glDisableVertexAttribArray(uvBlocIndex);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  GLuint normalBlocBuffer;
+  glGenBuffers(1, &normalBlocBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, normalBlocBuffer);
+  glBufferData(GL_ARRAY_BUFFER, normalsBloc.size()*sizeof(glm::vec3), &normalsBloc[0], GL_STATIC_DRAW);
+  GLint normalBlocIndex = glGetAttribLocation(programIDBloc, "vert_normal");
+  glEnableVertexAttribArray(normalBlocIndex);
+  glVertexAttribPointer(normalBlocIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(normalBlocIndex);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
@@ -210,13 +223,15 @@ int main(void)
 
   GLuint textureRobot = loadTGATexture("../resources/soko/diffus_robot.tga");
   GLuint textureRobotID = glGetUniformLocation(programIDRobot, "colorMap");
+  //GLuint lightdirnRobotID = glGetUniformLocation(programIDRobot, "lightdirn");
+  GLuint lightcolorRobotID = glGetUniformLocation(programIDRobot, "lightcolor");
 
   //---------GPU side version
   GLuint positionRobotBuffer;
   glGenBuffers(1, &positionRobotBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, positionRobotBuffer);
   glBufferData(GL_ARRAY_BUFFER, positionsRobot.size()*sizeof(glm::vec3), &positionsRobot[0], GL_STATIC_DRAW);
-  GLint positionRobotIndex = glGetAttribLocation(programIDRobot, "position");
+  GLint positionRobotIndex = glGetAttribLocation(programIDRobot, "vert_position");
   glEnableVertexAttribArray(positionRobotIndex);
   glVertexAttribPointer(positionRobotIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glDisableVertexAttribArray(positionRobotIndex);
@@ -226,10 +241,20 @@ int main(void)
   glGenBuffers(1, &uvRobotBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, uvRobotBuffer);
   glBufferData(GL_ARRAY_BUFFER, uvsRobot.size()*sizeof(glm::vec2), &uvsRobot[0], GL_STATIC_DRAW);
-  GLint uvRobotIndex = glGetAttribLocation(programIDRobot, "uv");
+  GLint uvRobotIndex = glGetAttribLocation(programIDRobot, "vert_uv");
   glEnableVertexAttribArray(uvRobotIndex);
   glVertexAttribPointer(uvRobotIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
   glDisableVertexAttribArray(uvRobotIndex);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  GLuint normalRobotBuffer;
+  glGenBuffers(1, &normalRobotBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, normalRobotBuffer);
+  glBufferData(GL_ARRAY_BUFFER, normalsRobot.size()*sizeof(glm::vec3), &normalsRobot[0], GL_STATIC_DRAW);
+  GLint normalRobotIndex = glGetAttribLocation(programIDRobot, "vert_normal");
+  glEnableVertexAttribArray(normalRobotIndex);
+  glVertexAttribPointer(normalRobotIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(normalRobotIndex);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
@@ -249,13 +274,14 @@ int main(void)
 
   GLuint textureLvl = loadTGATexture("../resources/lvl"+lvl+"/lvl"+lvl+"_diffus.tga");
   GLuint textureLvlID = glGetUniformLocation(programIDLvl, "colorMap");
+  GLuint lightcolorLvlID = glGetUniformLocation(programIDLvl, "lightcolor");
 
   //---------GPU side version
   GLuint positionLvlBuffer;
   glGenBuffers(1, &positionLvlBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, positionLvlBuffer);
   glBufferData(GL_ARRAY_BUFFER, positionsLvl.size()*sizeof(glm::vec3), &positionsLvl[0], GL_STATIC_DRAW);
-  GLint positionLvlIndex = glGetAttribLocation(programIDLvl, "position");
+  GLint positionLvlIndex = glGetAttribLocation(programIDLvl, "vert_position");
   glEnableVertexAttribArray(positionLvlIndex);
   glVertexAttribPointer(positionLvlIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glDisableVertexAttribArray(positionLvlIndex);
@@ -265,10 +291,20 @@ int main(void)
   glGenBuffers(1, &uvLvlBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, uvLvlBuffer);
   glBufferData(GL_ARRAY_BUFFER, uvsLvl.size()*sizeof(glm::vec2), &uvsLvl[0], GL_STATIC_DRAW);
-  GLint uvLvlIndex = glGetAttribLocation(programIDLvl, "uv");
+  GLint uvLvlIndex = glGetAttribLocation(programIDLvl, "vert_uv");
   glEnableVertexAttribArray(uvLvlIndex);
   glVertexAttribPointer(uvLvlIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
   glDisableVertexAttribArray(uvLvlIndex);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  GLuint normalLvlBuffer;
+  glGenBuffers(1, &normalLvlBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, normalLvlBuffer);
+  glBufferData(GL_ARRAY_BUFFER, normalsLvl.size()*sizeof(glm::vec3), &normalsLvl[0], GL_STATIC_DRAW);
+  GLint normalLvlIndex = glGetAttribLocation(programIDLvl, "vert_normal");
+  glEnableVertexAttribArray(normalLvlIndex);
+  glVertexAttribPointer(normalLvlIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glDisableVertexAttribArray(normalLvlIndex);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
@@ -279,7 +315,8 @@ int main(void)
   Matrix map = gameState.getMatrix();
   int mapRow = map.getRow();
   int mapColumn = map.getColumn();
-  glm::vec3 *translations = new glm::vec3[mapRow * mapColumn];
+  //glm::vec3 *translations = new glm::vec3[mapRow * mapColumn];
+  glm::vec3 translations[25];
   int nbBoxes = 0;
   float offset = 0.1f;
   for(int x=0; x<mapRow; x++){
@@ -293,7 +330,8 @@ int main(void)
       }
     }
   }
-  int *targetBoxes = new int[nbBoxes];
+  //int *targetBoxes = new int[nbBoxes];
+  int targetBoxes[25];
   for(int i=0; i<nbBoxes; i++){
     targetBoxes[i] = 0;
   }
@@ -303,17 +341,50 @@ int main(void)
   GLuint MatrixIDBloc = glGetUniformLocation(programIDBloc, "MVP");
   GLuint MatrixIDLvl = glGetUniformLocation(programIDLvl, "MVP");
   GLuint MatrixIDRobot = glGetUniformLocation(programIDRobot, "MVP");
+  GLuint ViewIDRobot = glGetUniformLocation(programIDRobot, "V");
+  GLuint ModelIDRobot = glGetUniformLocation(programIDRobot, "M");
+  GLuint LightIDRobot = glGetUniformLocation(programIDRobot, "LightPosition");
+  GLuint ViewIDLvl = glGetUniformLocation(programIDLvl, "V");
+  GLuint ModelIDLvl = glGetUniformLocation(programIDLvl, "M");
+  GLuint LightIDLvl = glGetUniformLocation(programIDLvl, "LightPosition");
+  GLuint ViewIDBloc = glGetUniformLocation(programIDBloc, "V");
+  GLuint ModelIDBloc = glGetUniformLocation(programIDBloc, "M");
+  GLuint LightIDBloc = glGetUniformLocation(programIDBloc, "LightPosition");
   
   glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
   glm::mat4 ViewMatrix;
-  glm::mat4 ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(4.5f,0.1f,-3.0f));
-  glm::mat4 ModelMatrixLvl = glm::rotate(glm::mat4(1.0),-PI/2,glm::vec3(0.0f,1.0f,0.0f));
-  glm::mat4 ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(3.5f,0.1f,0.0f));
+  glm::mat4 ModelMatrixBloc;
+  glm::mat4 ModelMatrixLvl;
+  glm::mat4 ModelMatrixRobot;
+  
+  if(lvl=="1"){
+    glClearColor(0.0, 0.5, 0.5, 0.0);
+    ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(4.5f,0.1f,-3.0f));
+    ModelMatrixLvl = glm::rotate(glm::mat4(1.0),-PI/2,glm::vec3(0.0f,1.0f,0.0f));
+    ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(3.5f,0.1f,0.0f));
+  }
+  else if(lvl=="2"){
+    glClearColor(0.5, 0.0, 0.5, 0.0);
+    ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(4.9f,0.0f,-4.7f));
+    ModelMatrixLvl = glm::rotate(glm::mat4(1.0),-PI/2,glm::vec3(0.0f,1.0f,0.0f));
+    ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(0.0f,0.0f,-0.5f));
+  }
+  else{
+    glClearColor(0.5, 0.5, 0.0, 0.0);
+    ModelMatrixBloc = glm::translate(glm::mat4(1.0),glm::vec3(3.3f,0.1f,-3.7f));
+    ModelMatrixLvl = glm::rotate(glm::mat4(1.0),PI/2,glm::vec3(0.0f,1.0f,0.0f));
+    ModelMatrixLvl = glm::scale(ModelMatrixLvl,glm::vec3(1.15f,1.15f,1.15f));
+    ModelMatrixRobot = glm::translate(glm::mat4(1.0),glm::vec3(1.3f,0.1f,-0.6f));
+  }
   //offset lvl1 : robot -> x+3.5f y+0.1f z+0.0f                                                   bloc  -> x+5.5f y+0.1f z-3.0f 
+  //offset lvl2 : robot -> x+0.0f y+0.0f z-0.5f                                                   bloc  -> x+4.9f y+0.0f z-4.7f 
+  //offset lvl3 : robot -> x+1.3f y+0.1f z-0.6f                                                   bloc  -> x+3.3f y+0.1f z-3.7f   lvl -> PI/2 scale1.15
   glm::mat4 MVPBloc;
   glm::mat4 MVPLvl;
   glm::mat4 MVPRobot;
 
+  //GLuint textureEasterEgg = loadTGATexture("../resources/lvl"+lvl+"/bloc"+lvl+"_diffus.tga");
+  //GLuint textureEasterEggID = glGetUniformLocation(programIDBloc, "colorMap");
 
   /*********************** Boucle **************************/
 
@@ -325,13 +396,21 @@ int main(void)
 
     ViewMatrix = computeMatricesFromInputs(window);
 
+    glm::vec3 lightPos = glm::vec3(2,5,-2);
+
     /****Robot****/
     glUseProgram(programIDRobot);
+    //glUniform3f(lightdirnRobotID,1.0f/1.415,0,1.0f/1.415);
+    glUniform3f(lightcolorRobotID,1.0f,1.0f,204.0/255);
 
     ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves);
     updateMatrix(translations, targetBoxes, gameState, nbBoxes);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
+
     glUniformMatrix4fv(MatrixIDRobot, 1, GL_FALSE, &MVPRobot[0][0]);
+    glUniformMatrix4fv(ModelIDRobot, 1, GL_FALSE, &ModelMatrixRobot[0][0]);
+    glUniformMatrix4fv(ViewIDRobot, 1, GL_FALSE, &ViewMatrix[0][0]);
+    glUniform3f(LightIDRobot, lightPos.x, lightPos.y, lightPos.z);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureRobot);
@@ -340,19 +419,26 @@ int main(void)
     glBindVertexArray(vaoRobot);
     glEnableVertexAttribArray(positionRobotIndex);
     glEnableVertexAttribArray(uvRobotIndex);
+    glEnableVertexAttribArray(normalRobotIndex);
 
     glDrawArrays(GL_TRIANGLES, 0, positionsRobot.size());
 
     glDisableVertexAttribArray(positionRobotIndex);
     glDisableVertexAttribArray(uvRobotIndex);
+    glDisableVertexAttribArray(normalRobotIndex);
     glBindVertexArray(0);
 
+    glUseProgram(0);
 
     /****Level****/
     glUseProgram(programIDLvl);
+    glUniform3f(lightcolorLvlID,1.0f,1.0f,204.0/255);
 
     MVPLvl = ProjectionMatrix * ViewMatrix * ModelMatrixLvl;
     glUniformMatrix4fv(MatrixIDLvl, 1, GL_FALSE, &MVPLvl[0][0]);
+    glUniformMatrix4fv(ModelIDLvl, 1, GL_FALSE, &ModelMatrixLvl[0][0]);
+    glUniformMatrix4fv(ViewIDLvl, 1, GL_FALSE, &ViewMatrix[0][0]);
+    glUniform3f(LightIDLvl, lightPos.x, lightPos.y, lightPos.z);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureLvl);
@@ -361,25 +447,43 @@ int main(void)
     glBindVertexArray(vaoLvl);
     glEnableVertexAttribArray(positionLvlIndex);
     glEnableVertexAttribArray(uvLvlIndex);
+    glEnableVertexAttribArray(normalLvlIndex);
 
     glDrawArrays(GL_TRIANGLES, 0, positionsLvl.size());
 
     glDisableVertexAttribArray(positionLvlIndex);
     glDisableVertexAttribArray(uvLvlIndex);
+    glDisableVertexAttribArray(normalLvlIndex);
     glBindVertexArray(0);
 
+    glUseProgram(0);
 
     /****Bloc****/
-    glUseProgram(0);
     glUseProgram(programIDBloc);
+    glUniform3f(lightcolorBlocID,1.0f,1.0f,204.0/255);
 
     MVPBloc = ProjectionMatrix * ViewMatrix * ModelMatrixBloc;
     glUniformMatrix4fv(MatrixIDBloc, 1, GL_FALSE, &MVPBloc[0][0]);
+    glUniformMatrix4fv(ModelIDBloc, 1, GL_FALSE, &ModelMatrixBloc[0][0]);
+    glUniformMatrix4fv(ViewIDBloc, 1, GL_FALSE, &ViewMatrix[0][0]);
+    glUniform3f(LightIDBloc, lightPos.x, lightPos.y, lightPos.z);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureBloc);
     glUniform1i(textureBlocID, 0);
-
+    /*
+    if(gameState.getEnd()){
+      std::cout << "Félicitations, tu as gagné ! =)" << std::endl;
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, textureEasterEgg);
+      glUniform1i(textureEasterEggID, 0);
+    }
+    else{
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, textureBloc);
+      glUniform1i(textureBlocID, 0);
+    }
+    */
     for(int i=0; i<nbBoxes; i++){
       std::stringstream ss;
       std::string index;
@@ -395,11 +499,13 @@ int main(void)
     glBindVertexArray(vaoBloc);
     glEnableVertexAttribArray(positionBlocIndex);
     glEnableVertexAttribArray(uvBlocIndex);
+    glEnableVertexAttribArray(normalBlocIndex);
 
     glDrawArraysInstanced(GL_TRIANGLES, 0, positionsBloc.size(), nbBoxes);
 
     glDisableVertexAttribArray(positionBlocIndex);
     glDisableVertexAttribArray(uvBlocIndex);
+    glDisableVertexAttribArray(normalBlocIndex);
 
     /*************/
     glfwSwapBuffers(window);
@@ -418,6 +524,9 @@ int main(void)
   glDeleteBuffers(1, &uvBlocBuffer);
   glDeleteBuffers(1, &uvRobotBuffer);
   glDeleteBuffers(1, &uvLvlBuffer);
+  glDeleteBuffers(1, &normalBlocBuffer);
+  glDeleteBuffers(1, &normalRobotBuffer);
+  glDeleteBuffers(1, &normalLvlBuffer);
   glDeleteVertexArrays(1, &vaoRobot);
   glDeleteVertexArrays(1, &vaoBloc);
   glDeleteVertexArrays(1, &vaoLvl);
