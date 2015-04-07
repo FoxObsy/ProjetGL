@@ -7,8 +7,9 @@ using namespace std;
 
 void GameState::event(int move){
   if(move == 1){
+    cout << "MOUVEMENT POSSIBLE ?? UP" <<endl;
     if(((matrix.getMatrix())[player.getX()][player.getY()+1]).isReachableFrom(Tile::Side::DOWN)){
-      cout << "MOUVEMENT POSSIBLE" <<endl;
+      cout << "MOUVEMENT POSSIBLE : UP" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -30,8 +31,9 @@ void GameState::event(int move){
   }
 
  if(move == 2){
+    cout << "MOUVEMENT POSSIBLE ?? DOWN" <<endl;
     if(((matrix.getMatrix())[player.getX()][player.getY()-1]).isReachableFrom(Tile::Side::UP)){
-      cout << "MOUVEMENT POSSIBLE" <<endl;
+      cout << "MOUVEMENT POSSIBLE : DOWN" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -53,8 +55,9 @@ void GameState::event(int move){
     }
   }
  if(move == 3){
+  cout << "MOUVEMENT POSSIBLE ?? RIGHT" <<endl;
     if(((matrix.getMatrix())[player.getX()-1][player.getY()]).isReachableFrom(Tile::Side::LEFT)){
-      cout << "MOUVEMENT POSSIBLE" <<endl;
+      cout << "MOUVEMENT POSSIBLE : RIGHT" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
       cout << "ancien player x:" << player.getX() <<endl;
       cout << "ancien player y:" << player.getY() <<endl;
@@ -77,6 +80,7 @@ void GameState::event(int move){
   }
 
  if(move == 4){
+  cout << "MOUVEMENT POSSIBLE ?? LEFT" <<endl;
     if(((matrix.getMatrix())[player.getX()+1][player.getY()]).isReachableFrom(Tile::Side::RIGHT)){
       cout << "MOUVEMENT POSSIBLE" <<endl;
       ((matrix.getMatrix())[player.getX()][player.getY()]).setPlayer(false);
