@@ -8,7 +8,7 @@ Matrix Matrix::setMap(string chMatrix){
   bool emptyLine;
   if(fileMatrix){
     fileMatrix >> _column >> _row;
-    _row += 1
+    _row += 1;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
       cout << line.length() - 1 << endl;
