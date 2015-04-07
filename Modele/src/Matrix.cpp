@@ -76,17 +76,17 @@ int* Matrix::getPositionPlayer(){
 void Matrix::AffMatrix(){
   for(int i = 0; i<_row; i++){
     for(int j = 0; j < _column; j++){
-      if(_matrix[i][j].hasBox()){
+      if(_matrix[i][j].hasBox() && !_matrix[i][j].hasTarget()){
 	cout << 'b';
       }else if(_matrix[i][j].hasBox() && _matrix[i][j].hasTarget()){
 	cout << 'B';
       }
-      if(_matrix[i][j].hasTarget()){
+      if(_matrix[i][j].hasTarget() && _matrix[i][j].isEmpty()){
 	cout << 't';
-      }else if(_matrix[i][j].isEmpty()){
-	cout << '-';
       }else if(_matrix[i][j].hasTarget() && _matrix[i][j].hasPlayer()){
 	cout << 'P';
+      }else{
+	cout << '-';
       }
       if(_matrix[i][j].isBorder()){
 	cout << 'x';
