@@ -1,10 +1,5 @@
 #include "../include/Matrix.hpp"
 
-int main(){
-  Matrix *mat = new Matrix();
-  mat->setMap("../lvl1.txt");
-}
-
 Matrix Matrix::setMap(string chMatrix){ 
   _pathFile = chMatrix;
   ifstream fileMatrix(_pathFile.c_str(), ios::in); 
@@ -13,6 +8,8 @@ Matrix Matrix::setMap(string chMatrix){
   bool emptyLine;
   if(fileMatrix){
     fileMatrix >> _row >> _column;
+    cout << _row << endl;
+    cout << _column << endl;
     while(!fileMatrix.eof() && !emptyLine){
       getline(fileMatrix, line);
       if(line == ""){
@@ -48,6 +45,8 @@ Matrix Matrix::setMap(string chMatrix){
       i++;
     }
     fileMatrix.close();
+  }else{ 
+    cout << "Impossible d'obtenir le fichier";
   }
 }
 
