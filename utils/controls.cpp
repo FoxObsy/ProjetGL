@@ -90,7 +90,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 1;
     moves++;
-    gameState.event(4);
+    gameState.event(1);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -124,7 +124,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 4;
     moves++;
-    gameState.event(1);
+    gameState.event(4);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -158,7 +158,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 2;
     moves++;
-    gameState.event(3);
+    gameState.event(2);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -192,7 +192,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 3;
     moves++;
-    gameState.event(2);
+    gameState.event(3);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;

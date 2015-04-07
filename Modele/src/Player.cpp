@@ -36,7 +36,7 @@ void Player::resetMoves() {
 /* ------------------------- */
 
 void Player::up() {
-  _y++;
+  _x++;
   /*
   _controls.up();
   _x = _controls.getX();
@@ -45,7 +45,7 @@ void Player::up() {
 }
 
 void Player::down() {
-  _y--;
+  _x--;
   /*
   _controls.down();
   _x = _controls.getX();
@@ -54,7 +54,7 @@ void Player::down() {
 }
 
 void Player::left() {
-  _x++;
+  _y++;
   /*
   _controls.left();
   _x = _controls.getX();
@@ -63,7 +63,7 @@ void Player::left() {
 }
 
 void Player::right() {
-  _x--;
+  _y--;
   /*
   _controls.right();
   _x = _controls.getX();
