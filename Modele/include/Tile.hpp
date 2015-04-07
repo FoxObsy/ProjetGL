@@ -62,17 +62,17 @@ public:
   bool isReachable();
   bool isReachableFrom(Tile::Side side);
  
-  void setTileUp(Tile & t);
-  Tile & tileUp();
+  void setTileUp(Tile* t);
+  Tile tileUp();
 
-  void setTileDown(Tile & t);
-  Tile & tileDown();
+  void setTileDown(Tile* t);
+  Tile tileDown();
   
-  void setTileLeft(Tile & t);
-  Tile & tileLeft();
+  void setTileLeft(Tile* t);
+  Tile tileLeft();
 
-  void setTileRight(Tile & t);
-  Tile & tileRight();
+  void setTileRight(Tile* t);
+  Tile tileRight();
 
 };
 

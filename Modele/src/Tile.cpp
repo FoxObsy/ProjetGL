@@ -8,34 +8,34 @@ using namespace std;
 // ------------------------------------------
 
 // UP
-void Tile::setTileUp(Tile & t){
-  _tileUp = &t;
+void Tile::setTileUp(Tile* t){
+  _tileUp = t;
 }
-Tile & Tile::tileUp(){
+Tile Tile::tileUp(){
   return *_tileUp;
 }
 
 // DOWN
-void Tile::setTileDown(Tile & t) {
-  _tileDown = &t;
+void Tile::setTileDown(Tile* t) {
+  _tileDown = t;
 }
-Tile & Tile::tileDown() {
+Tile Tile::tileDown() {
   return *_tileDown;
 }
 
 // LEFT
-void Tile::setTileLeft(Tile & t) {
-  _tileLeft = &t;
+void Tile::setTileLeft(Tile* t) {
+  _tileLeft = t;
 }
-Tile & Tile::tileLeft() {
+Tile Tile::tileLeft() {
   return *_tileLeft;
 }
 
 // RIGHT
-void Tile::setTileRight(Tile & t) {
-  _tileRight = &t;
+void Tile::setTileRight(Tile* t) {
+  _tileRight = t;
 }
-Tile & Tile::tileRight() {
+Tile Tile::tileRight() {
   return *_tileRight;
 }
 
