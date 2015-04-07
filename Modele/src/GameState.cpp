@@ -119,7 +119,7 @@ void GameState::event(int move){
 	((matrix.getMatrix())[player.getX()-1][player.getY()]).setEmpty(false);
 	((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
 	player.incMoves();
-	if(((matrix.getMatrix())[player.getX()-1][player.getY()])).hasTarget()){
+	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
 	  nbr_target_free --;
 	}
       }

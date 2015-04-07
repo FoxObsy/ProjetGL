@@ -26,7 +26,7 @@ char keyOnce[GLFW_KEY_LAST + 1];
 
 float horizontalAngle = 0.0f;
 float verticalAngle = 0.0f;
-float radius = 10.0f;
+float radius = 8.0f;
 float speed = 0.05f;
 
 glm::mat4 computeMatricesFromInputs(GLFWwindow* window){

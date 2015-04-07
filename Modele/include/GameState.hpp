@@ -3,6 +3,7 @@
 
 #include "Matrix.hpp"
 #include "Player.hpp"
+#include "Tile.hpp"
 
 class GameState{
 
