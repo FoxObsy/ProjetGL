@@ -75,6 +75,7 @@ bool Tile::isEmpty() {
 void Tile::setBorder(bool b) {
   _isBorder = b;
   _isReachable = !b; // inutile
+  _isEmpty = !b;
 }
 bool Tile::isBorder() {
   return _isBorder;
@@ -91,6 +92,7 @@ bool Tile::hasTarget() {
 // Player
 void Tile::setPlayer(bool b) {
   _hasPlayer = b;
+  _isEmpty = !b;
 }
 bool Tile::hasPlayer() {
   return _hasPlayer;
@@ -99,6 +101,7 @@ bool Tile::hasPlayer() {
 // Box
 void Tile::setBox(bool b) {
   _hasBox = b;
+  _isEmpty = !b;
 }	   
 bool Tile::hasBox() {
   return _hasBox;
