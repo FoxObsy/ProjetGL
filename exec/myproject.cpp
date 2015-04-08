@@ -5,6 +5,7 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <irrKlang.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -27,9 +28,13 @@
 #include "include/GameState.hpp"
 #include "include/Tile.hpp"
 
+
+
 #define WIDTH 1024
 #define HEIGHT 768
 #define PI glm::pi<float>()
+
+using namespace irrklang;
 
 GLFWwindow* window;
 //std::string lvl = "3";
@@ -102,7 +107,9 @@ void updateMatrix(glm::vec3* translations, int* targetBoxes, GameState gameState
 int main(void)
 {
   /*********************** Initialisation **************************/
-  
+  ISoundEngine* engine = createIrrKlangDevice();
+  ISoundSource* caisse = engine->addSoundSourceFromFile("../resources/sound/boxSound.ogg");
+  ISoundSource* pas = engine->addSoundSourceFromFile("../resources/sound/Pas.ogg"); 
   std::string lvl;
   int lvlID;
   std::cout << "Choix du niveau (1,2,3) : ";
@@ -316,6 +323,14 @@ int main(void)
   int mapRow = map.getRow();
   int mapColumn = map.getColumn();
   //glm::vec3 *translations = new glm::vec3[mapRow * mapColumn];
+  /***** MUSIC *****/
+  ISoundSource* music;
+  string sMusic = "../resources/sound/sound"+lvl+".ogg";
+  music = engine->addSoundSourceFromFile(sMusic.c_str()); 
+  music->setDefaultVolume(0.3f);
+  engine->play2D(music, true);
+
+  /*****************/
   glm::vec3 translations[25];
   int nbBoxes = 0;
   float offset = 0.1f;
@@ -403,7 +418,7 @@ int main(void)
     //glUniform3f(lightdirnRobotID,1.0f/1.415,0,1.0f/1.415);
     glUniform3f(lightcolorRobotID,1.0f,1.0f,204.0/255);
 
-    ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves);
+    ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves,engine,caisse,pas);
     updateMatrix(translations, targetBoxes, gameState, nbBoxes);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
 

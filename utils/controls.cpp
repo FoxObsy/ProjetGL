@@ -26,6 +26,7 @@ char keyOnce[GLFW_KEY_LAST + 1];
    (keyOnce[KEY] = false))
 
 using namespace irrklang;
+
 float radius = 10.0f;
 float speed = 0.05f;
 float horizontalAngle = -PI/2;
@@ -92,8 +93,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 1;
     moves++;
-    sound =gameState.event(1);
-
+    sound = gameState.event(1);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -125,7 +125,6 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
       transl = glm::vec3(1.0f,0.0f,0.0f);
       break;
     }
-
     direction = 4;
     moves++;
     sound = gameState.event(4);
@@ -162,7 +161,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 2;
     moves++;
-    sound =gameState.event(2);
+    sound = gameState.event(2);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -196,7 +195,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     }
     direction = 3;
     moves++;
-    sound =gameState.event(3);
+    sound = gameState.event(3);
     int* newPosition = gameState.getMatrix().getPositionPlayer();
     std::cout << newPosition[0] << " - " << newPosition[1] << std::endl;
     std::cout << oldPosition[0] << " - " << oldPosition[1] << std::endl;
@@ -217,7 +216,7 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
     ModelMatrixRobot = glm::translate(ModelMatrixRobot, glm::vec3(0.0f,-1.0f,0.0f));
     }
   */
-  if(sound == 1){
+    if(sound == 1){
      engine->play2D(pas,false);
   }
 

@@ -71,9 +71,14 @@ public:
   Tile **getMatrix();
   int* getPositionPlayer();
   void AffMatrix();
-  void destroyMatrix();
   
-  ~Matrix(){ }
+  ~Matrix(){ 
+    /*for(int i = 0; i<_row; i++){
+      delete[] _matrix[i];
+    }
+    delete[] _matrix;*/
+    }
+
 };
 
 #endif

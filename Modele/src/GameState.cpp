@@ -1,6 +1,6 @@
 /**
- *	@title Boucle de jeu
- *	@author Romain Tourrel
+ *  @title Boucle de jeu
+ *  @author Romain Tourrel
  */
 #include "../include/GameState.hpp"
 using namespace std;
@@ -23,12 +23,12 @@ int GameState::event(int move){
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
         sound=2;
-	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
+  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
+  ((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
+  if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
     cout << "LIBERATION DE CIBLE" <<endl;
-	  nbr_target_free --;
-	}
+    nbr_target_free --;
+  }
       }
     }
   }
@@ -49,12 +49,12 @@ int GameState::event(int move){
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
         sound=2;
-	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
+  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
+  ((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
+  if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
     cout << "LIBERATION DE CIBLE" <<endl;
-	  nbr_target_free --;
-	}
+    nbr_target_free --;
+  }
       }
 
     }
@@ -75,12 +75,12 @@ int GameState::event(int move){
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
         sound=2;
-	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
+  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
+  ((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
+  if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
     cout << "LIBERATION DE CIBLE" <<endl;
-	  nbr_target_free --;
-	}
+    nbr_target_free --;
+  }
       }
 
     }
@@ -102,12 +102,12 @@ int GameState::event(int move){
       if(((matrix.getMatrix())[player.getX()][player.getY()]).hasBox()){
         cout << "CAISSE DETECTE" <<endl;
         sound=2;
-	((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
-	((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
-	if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
+  ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
+  ((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
+  if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
     cout << "LIBERATION DE CIBLE" <<endl;
-	  nbr_target_free --;
-	}
+    nbr_target_free --;
+  }
       }
 
     }
@@ -133,7 +133,7 @@ void GameState::initNbrTargetFree(){
   for(int i = 0; i<matrix.getRow();i++){
     for(int j = 0; j<matrix.getColumn();j++){
       if(matrix.getMatrix()[i][j].hasTarget() && !matrix.getMatrix()[i][j].hasBox()){
-	nbr_target_free++;
+  nbr_target_free++;
       }
     }
   }

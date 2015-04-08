@@ -20,7 +20,7 @@ public:
   Matrix getMatrix();
   void initNbrTargetFree();
 
-  ~GameState(){ }
+  ~GameState(){}
 };
 
 #endif
