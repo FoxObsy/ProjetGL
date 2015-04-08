@@ -140,7 +140,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a window of given size
-    window =glfwCreateWindow(WIDTH, HEIGHT, "SokobanGL", NULL, NULL);
+    window =glfwCreateWindow(WIDTH, HEIGHT, "Minimal OpenGL application with GLFW", NULL, NULL);
 
     if (!window) {
       std::cerr<<"Could not open a window"<<std::endl;
@@ -361,6 +361,7 @@ int main(void)
     }
 
     /**********************************************************/
+    initParameters();
 
     GLuint MatrixIDBloc = glGetUniformLocation(programIDBloc, "MVP");
     GLuint MatrixIDLvl = glGetUniformLocation(programIDLvl, "MVP");

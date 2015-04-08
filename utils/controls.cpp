@@ -225,3 +225,14 @@ glm::mat4 moveRobot(GLFWwindow* window, GameState &gameState, glm::mat4 ModelMat
   }
   return ModelMatrixRobot;
 }
+
+void initParameters(){
+  radius = 10.0f;
+  speed = 0.05f;
+  horizontalAngle = -PI/2;
+  verticalAngle = PI/2 - speed;
+
+  direction = 1;
+  postion = glm::vec3(0.0f);
+
+}
