@@ -107,13 +107,7 @@ void updateMatrix(glm::vec3* translations, int* targetBoxes, GameState gameState
 int main(void)
 {
   /*********************** Initialisation **************************/
-<<<<<<< HEAD
-  ISoundEngine* engine = createIrrKlangDevice();
-  ISoundSource* caisse = engine->addSoundSourceFromFile("../resources/sound/boxSound.ogg");
-  ISoundSource* pas = engine->addSoundSourceFromFile("../resources/sound/Pas.ogg");
-  ISoundSource* just = engine->addSoundSourceFromFile("../resources/sound/just.ogg"); 
-=======
->>>>>>> 6139381b92d87f9a022068dc9ed070698080e30a
+
   std::string lvl;
   int lvlID = 1;
 
@@ -419,7 +413,7 @@ int main(void)
     //GLuint textureEasterEggID = glGetUniformLocation(programIDBloc, "colorMap");
 
     /*********************** Boucle **************************/
-
+    bool end = true;
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && glfwWindowShouldClose(window) == 0){
 
       //hudTime = glfwGetTime();
@@ -543,25 +537,19 @@ int main(void)
       glfwSwapBuffers(window);
       glfwPollEvents();
 
-<<<<<<< HEAD
+
     glBindVertexArray(0);
     glUseProgram(0);
 
 
     /************/
-    if(gameState.getEnd()){
+    if(gameState.getEnd() && end){
       engine->play2D(just,false);
+      end=false;
     }
   }
-=======
-      glBindVertexArray(0);
-      glUseProgram(0);
-      
-      if(gameState.getEnd()){
-	engine->play2D(just,false);
-      }
-    }
->>>>>>> 6139381b92d87f9a022068dc9ed070698080e30a
+
+
 
 
     /*********************** Nettoyage **************************/
