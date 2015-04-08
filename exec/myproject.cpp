@@ -5,8 +5,6 @@
 #include <string>
 #include <cstring>
 #include <vector>
-#include <irrKlang.h>
-      
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -29,11 +27,10 @@
 #include "include/GameState.hpp"
 #include "include/Tile.hpp"
 
-
 #define WIDTH 1024
 #define HEIGHT 768
 #define PI glm::pi<float>()
-using namespace irrklang;
+
 GLFWwindow* window;
 //std::string lvl = "3";
 
@@ -105,11 +102,6 @@ void updateMatrix(glm::vec3* translations, int* targetBoxes, GameState gameState
 int main(void)
 {
   /*********************** Initialisation **************************/
-<<<<<<< HEAD
-  ISoundEngine* engine = createIrrKlangDevice();
-  ISoundSource* caisse = engine->addSoundSourceFromFile("../resources/sound/boxSound.ogg");
-  ISoundSource* pas = engine->addSoundSourceFromFile("../resources/sound/Pas.ogg"); 
-=======
   
   std::string lvl;
   int lvlID;
@@ -123,7 +115,6 @@ int main(void)
     lvl = std::to_string(lvlID);
   }
 
->>>>>>> ad78447be6f3743a668beccd883082abd15b903e
   if (!glfwInit()) return -1; //shutDown(1);
 
   // Create OpenGL 4.4 Core Profile and Forward Compatible Context
@@ -322,14 +313,6 @@ int main(void)
   
   GameState gameState("../resources/lvl"+lvl+"/lvl"+lvl+".txt");
   Matrix map = gameState.getMatrix();
-  ISoundSource* music;
-
-  string sMusic = "../resources/sound/sound"+lvl+".ogg";
-  music = engine->addSoundSourceFromFile(sMusic.c_str()); 
-
-  
-  music->setDefaultVolume(0.3f);
-  engine->play2D(music, true);
   int mapRow = map.getRow();
   int mapColumn = map.getColumn();
   //glm::vec3 *translations = new glm::vec3[mapRow * mapColumn];
@@ -420,7 +403,7 @@ int main(void)
     //glUniform3f(lightdirnRobotID,1.0f/1.415,0,1.0f/1.415);
     glUniform3f(lightcolorRobotID,1.0f,1.0f,204.0/255);
 
-    ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves,engine,caisse,pas);
+    ModelMatrixRobot = moveRobot(window, gameState, ModelMatrixRobot, hudMoves);
     updateMatrix(translations, targetBoxes, gameState, nbBoxes);
     MVPRobot = ProjectionMatrix * ViewMatrix * ModelMatrixRobot;
 
@@ -552,7 +535,7 @@ int main(void)
   glDeleteProgram(programIDLvl);
 
   glfwTerminate();
-  engine->drop();
+
   return 0; //shutDown(0);
 
 }
