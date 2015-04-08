@@ -421,7 +421,7 @@ int main(void)
 
       ViewMatrix = computeMatricesFromInputs(window);
 
-      glm::vec3 lightPos = glm::vec3(2,2,-2);
+      glm::vec3 lightPos = glm::vec3(-2,3,2);
 
       /****Robot****/
       glUseProgram(programIDRobot);
