@@ -140,7 +140,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a window of given size
-    window =glfwCreateWindow(WIDTH, HEIGHT, "Minimal OpenGL application with GLFW", NULL, NULL);
+    window =glfwCreateWindow(WIDTH, HEIGHT, "SokobanGL", NULL, NULL);
 
     if (!window) {
       std::cerr<<"Could not open a window"<<std::endl;
