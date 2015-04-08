@@ -109,7 +109,8 @@ int main(void)
   /*********************** Initialisation **************************/
   ISoundEngine* engine = createIrrKlangDevice();
   ISoundSource* caisse = engine->addSoundSourceFromFile("../resources/sound/boxSound.ogg");
-  ISoundSource* pas = engine->addSoundSourceFromFile("../resources/sound/Pas.ogg"); 
+  ISoundSource* pas = engine->addSoundSourceFromFile("../resources/sound/Pas.ogg");
+  ISoundSource* just = engine->addSoundSourceFromFile("../resources/sound/just.ogg"); 
   std::string lvl;
   int lvlID;
   std::cout << "Choix du niveau (1,2,3) : ";
@@ -528,6 +529,12 @@ int main(void)
 
     glBindVertexArray(0);
     glUseProgram(0);
+
+
+    /************/
+    if(gameState.getEnd()){
+      engine->play2D(just,false);
+    }
   }
 
 

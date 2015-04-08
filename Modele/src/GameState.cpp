@@ -26,8 +26,13 @@ int GameState::event(int move){
   ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
   ((matrix.getMatrix())[player.getX()+1][player.getY()]).setBox(true);
   if(((matrix.getMatrix())[player.getX()+1][player.getY()]).hasTarget()){
-    cout << "LIBERATION DE CIBLE" <<endl;
+    cout << "BIEN JOUE" <<endl;
     nbr_target_free --;
+  }
+
+  if(((matrix.getMatrix())[player.getX()][player.getY()]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
+    nbr_target_free ++;
   }
       }
     }
@@ -52,8 +57,12 @@ int GameState::event(int move){
   ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
   ((matrix.getMatrix())[player.getX()-1][player.getY()]).setBox(true);
   if(((matrix.getMatrix())[player.getX()-1][player.getY()]).hasTarget()){
-    cout << "LIBERATION DE CIBLE" <<endl;
+    cout << "BIEN JOUE" <<endl;
     nbr_target_free --;
+  }
+  if(((matrix.getMatrix())[player.getX()][player.getY()]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
+    nbr_target_free ++;
   }
       }
 
@@ -78,8 +87,12 @@ int GameState::event(int move){
   ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
   ((matrix.getMatrix())[player.getX()][player.getY()-1]).setBox(true);
   if(((matrix.getMatrix())[player.getX()][player.getY()-1]).hasTarget()){
-    cout << "LIBERATION DE CIBLE" <<endl;
+    cout << "BIEN JOUE" <<endl;
     nbr_target_free --;
+  }
+  if(((matrix.getMatrix())[player.getX()][player.getY()]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
+    nbr_target_free ++;
   }
       }
 
@@ -105,8 +118,12 @@ int GameState::event(int move){
   ((matrix.getMatrix())[player.getX()][player.getY()]).setBox(false);
   ((matrix.getMatrix())[player.getX()][player.getY()+1]).setBox(true);
   if(((matrix.getMatrix())[player.getX()][player.getY()+1]).hasTarget()){
-    cout << "LIBERATION DE CIBLE" <<endl;
+    cout << "BIEN JOUE" <<endl;
     nbr_target_free --;
+  }
+  if(((matrix.getMatrix())[player.getX()][player.getY()]).hasTarget()){
+    cout << "LIBERATION DE CIBLE" <<endl;
+    nbr_target_free ++;
   }
       }
 
