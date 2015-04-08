@@ -37,7 +37,7 @@ vec3 ComputeLightSpecular (const in vec3 lightdirn, const in vec3 lightcolor, co
 
 void main()
 {
-
+/*
   vec3 out_color;
   if(inTarget==1){	
 	out_color = texture(colorMap,uv).xyz + vec3(0.3,0.3,0.0);
@@ -45,7 +45,7 @@ void main()
   else{
 	out_color = texture(colorMap,uv).xyz;
   }
-
+*/
   vec3 normlightdirn = normalize(lightdirn);
 
   vec3 fragNormal = normalize(normal);
@@ -54,7 +54,7 @@ void main()
 
   vec3 phong= ComputeLightSpecular(normlightdirn, lightcolor, fragNormal, eyedirn, specular, myshininess);
 
-  fragColor= vec3(ambient*out_color+lambert*out_color+phong);
-  //fragColor= vec3(ambient*texture(colorMap,uv).rgb+lambert*texture(colorMap,uv).rgb+phong);
+  //fragColor= vec3(ambient*out_color+lambert*out_color+phong);
+  fragColor= vec3(ambient*texture(colorMap,uv).rgb+lambert*texture(colorMap,uv).rgb+phong);
 
 }
