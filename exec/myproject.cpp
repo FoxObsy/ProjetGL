@@ -538,7 +538,7 @@ int main(void)
       glBindVertexArray(0);
       glUseProgram(0);
       
-      if(gameState.end()){
+      if(gameState.getEnd()){
 	engine->play2D(just,false);
       }
     }
