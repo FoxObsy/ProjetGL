@@ -110,3 +110,10 @@ void Matrix::attribSideTiles() {
     }
   }
 }
+
+void Matrix::destroyMatrix(){
+  for(int i = 0; i< _row; i++){
+      delete[] _matrix[i];
+  }
+  delete[] _matrix;
+}
